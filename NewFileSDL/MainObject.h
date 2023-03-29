@@ -6,6 +6,7 @@
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
 #define PLAYER_SPEED 8
+#define PLAYER_JUMP_VAL 15
 class MainObject : public BaseObject
 {
     public:
@@ -57,6 +58,8 @@ class MainObject : public BaseObject
         //Vị trí của map để làm map di chuyển 
         int map_x_;
         int map_y_;
+        
+
 };
 
 #endif
