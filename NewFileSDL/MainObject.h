@@ -15,8 +15,9 @@ class MainObject : public BaseObject
 
         //Con số ứng với trạng thái trái hay phải
         enum WalkType{
-            WALK_RIGHT = 0,
-            WALK_LEFT = 1,
+            WALK_NONE = 0,
+            WALK_RIGHT = 1,
+            WALK_LEFT = 2,
         };
 
         bool LoadImg (std::string path, SDL_Renderer* screen);
@@ -32,6 +33,7 @@ class MainObject : public BaseObject
         void SetMapXY(const int map_x, const int map_y){map_x_ = map_x; map_y_ = map_y;}
         //
         void CenterEntityOnMap(Map& map_data);
+        void UpdateImagePlayer(SDL_Renderer* des);
     private:
         //Khi bấm trái phải đi 1 lượng bao nhiêu
         float x_val_;

@@ -16,6 +16,7 @@ BaseObject::~BaseObject()
 
 bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen)
 {
+    Free();
     SDL_Texture* new_texture = NULL;
     //Hàm IMG_Load sẽ trả ra 1 surface
     //Và dùng surface để load lên màn hình

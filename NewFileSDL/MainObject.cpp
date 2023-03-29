@@ -9,7 +9,7 @@ MainObject::MainObject()
     y_val_ = 0;
     width_frame_ = 0;
     height_frame_ = 0;
-    status_ = -1; //chưa biết trái phải
+    status_ = WALK_NONE; //chưa biết trái phải
     input_type_.left_ = 0;
     input_type_.right_ = 0;
     input_type_.jump_ = 0;
@@ -85,26 +85,7 @@ void MainObject::set_clips(){
 }
 
 void MainObject:: Show(SDL_Renderer* des){
-    //Nếu dưới đất lấy ảnh dưới đất
-    if(on_ground_ == true){
-        //Nếu là trái phải thì lấy ảnh trái phải
-        if(status_ == WALK_LEFT){
-            LoadImg("assets/img/map/player_left.png", des);
-        } 
-        else if(status_ == WALK_RIGHT){
-            LoadImg("assets/img/map/player_right.png", des);
-        }
-    }
-    //Nếu trên không trung lấy ảnh trên không trung
-    if(on_ground_ != true){
-        //Nếu là trái phải thì lấy ảnh trái phải
-        if(status_ == WALK_LEFT){
-            LoadImg("assets/img/map/jum_left.png", des);
-        }
-        else if(status_ == WALK_RIGHT){
-            LoadImg("assets/img/map/jum_right.png", des);
-        }
-    } 
+    UpdateImagePlayer(des);
     //Nếu liên tục bấm -> tăng frame
     if(input_type_.left_ == 1 ||
        input_type_.right_ == 1)
@@ -147,12 +128,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                 input_type_.left_ = 0;
                 //Nếu dưới đất thì load ảnh chân di chuyển
                 //Nếu trên không trung thì load ảnh chân đứng im 
-                if(on_ground_ == true){
-                    LoadImg("assets/img/map/player_right.png", screen);
-                }
-                else{
-                    LoadImg("assets/img/map/jum_right.png", screen);
-                }
+                UpdateImagePlayer(screen);
             }
             break;
         
@@ -161,12 +137,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                 status_ = WALK_LEFT;
                 input_type_.left_ = 1;
                 input_type_.right_ = 0;
-                if(on_ground_ == true){
-                    LoadImg("assets/img/map/player_left.png", screen);
-                }
-                else{
-                    LoadImg("assets/img/map/jum_left.png", screen);
-                }
+                UpdateImagePlayer(screen);
             }
             break;
         }
@@ -230,11 +201,10 @@ void MainObject::DoPlayer(Map &map_data){
     if(come_back_time_ > 0){
         come_back_time_ --;
         if(come_back_time_ == 0){
+            on_ground_ = false;
             if(x_pos_ > 256){
                 //4 TILE map
                 x_pos_ -= 256;
-                map_x_ -= 256;
-
             }
             else{
                 x_pos_ = 0;
@@ -338,8 +308,11 @@ void MainObject:: CheckToMap(Map &map_data){
                 y_pos_ = y2 * TILE_SIZE;
                 y_pos_ -= (height_frame_ +1);
                 y_val_ = 0;
-                //Đang trên mặt đất
                 on_ground_ = true;
+                if(status_ == WALK_NONE){
+                    status_ = WALK_RIGHT;
+                }
+
             }
         }
         else if( y_val_ <0){
@@ -363,4 +336,31 @@ void MainObject:: CheckToMap(Map &map_data){
     if(y_pos_ > map_data.max_y_){
         come_back_time_ = 60;
     }
+}
+
+void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
+    //Nếu dưới đất lấy ảnh dưới đất
+    if(on_ground_ == true){
+        //Nếu là trái phải thì lấy ảnh trái phải
+        if(status_ == WALK_LEFT){
+            LoadImg("assets/img/map/player_left.png", des);
+        } 
+        else if(status_ == WALK_RIGHT){
+            LoadImg("assets/img/map/player_right.png", des);
+        }
+    }
+    //Nếu trên không trung lấy ảnh trên không trung
+    else{
+        //Mà ở đầu map thì load ảnh nhảy bên phải
+        if(x_pos_ == 0){
+            LoadImg("assets/img/map/jum_right.png", des);
+        }
+        //Nếu là trái phải thì lấy ảnh trái phải
+        if(status_ == WALK_LEFT){
+            LoadImg("assets/img/map/jum_left.png", des);
+        }
+        else if(status_ == WALK_RIGHT){
+            LoadImg("assets/img/map/jum_right.png", des);
+        }
+    } 
 }
