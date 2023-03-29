@@ -18,6 +18,7 @@ MainObject::MainObject()
     on_ground_ = false;
     map_x_ = 0;
     map_y_ = 0;
+    come_back_time_ = 0;
 }
 
 MainObject::~MainObject()
@@ -120,16 +121,19 @@ void MainObject:: Show(SDL_Renderer* des){
         frame_ = 0;
     }
     
-    //Lấy vị trí và kích thước của hình ảnh tại frame hiện tại
-    //TRỪ ĐI ĐỂ NHÂN VẬT ĐỨNG ĐÚNG CHỖ TRÊN MÀN HÌNH
-    //NẾU KHÔNG THÌ NHÂN VẬT SẼ BỊ CUỐN THEO MÀN HÌNH
-    rect_.x = x_pos_ - map_x_;
-    rect_.y = y_pos_ - map_y_;
-    //Lấy current clip tại frame đang chạy 
-    SDL_Rect* current_clip = &frame_clip_[frame_];
-    SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame_, height_frame_};
-    //Vẽ đối tượng 
-    SDL_RenderCopy(des, p_object_, current_clip, &renderQuad);
+    if(come_back_time_ == 0){
+        //Lấy vị trí và kích thước của hình ảnh tại frame hiện tại
+        //TRỪ ĐI ĐỂ NHÂN VẬT ĐỨNG ĐÚNG CHỖ TRÊN MÀN HÌNH
+        //NẾU KHÔNG THÌ NHÂN VẬT SẼ BỊ CUỐN THEO MÀN HÌNH
+        rect_.x = x_pos_ - map_x_;
+        rect_.y = y_pos_ - map_y_;
+        //Lấy current clip tại frame đang chạy 
+        SDL_Rect* current_clip = &frame_clip_[frame_];
+        SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame_, height_frame_};
+        //Vẽ đối tượng 
+        SDL_RenderCopy(des, p_object_, current_clip, &renderQuad);
+    }
+
 }
 
 //Kiểm tra phím nào được ấn và đánh dấu phím đó
@@ -192,34 +196,56 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
 }
 //Di chuyển sang trái phải, rơi tự do
 void MainObject::DoPlayer(Map &map_data){
-    x_val_ = 0;
-    //Khi y_val_ cộng lên dần thì nhân vật rơi dần từ trên xuống
-    //Tốc độ rơi
-    y_val_ += GRAVITY_SPEED;
-    //Chỉ tăng đến 1 lượng nào đó
-    if(y_val_ >= MAX_FALL_SPEED){
-        y_val_ = MAX_FALL_SPEED;
-    }
-    if(input_type_.left_ == 1){
-        x_val_ -= PLAYER_SPEED;;
-    }
-    else if(input_type_.right_ == 1){
-        x_val_ += PLAYER_SPEED;
-    }
-
-    if(input_type_.jump_ == 1){
-        //CHỈ KHI Ở DƯỚI ĐẤT MỚI NHẢY ĐƯỢC
-        if(on_ground_ == true){
-            y_val_ = - PLAYER_JUMP_VAL;
+    //Nếu như nhân vật ở trong bản đồ thì xử lí, ngoài bản đồ thì thôi
+    if(come_back_time_ == 0){
+        x_val_ = 0;
+        //Khi y_val_ cộng lên dần thì nhân vật rơi dần từ trên xuống
+        //Tốc độ rơi
+        y_val_ += GRAVITY_SPEED;
+        //Chỉ tăng đến 1 lượng nào đó
+        if(y_val_ >= MAX_FALL_SPEED){
+            y_val_ = MAX_FALL_SPEED;
         }
-        //Nhảy là không chạm đất nữa
-        on_ground_ = false;
-        //Nhảy xong phải đưa về không
-        input_type_.jump_ = 0;
+        if(input_type_.left_ == 1){
+            x_val_ -= PLAYER_SPEED;;
+        }
+        else if(input_type_.right_ == 1){
+            x_val_ += PLAYER_SPEED;
+        }
+    
+        if(input_type_.jump_ == 1){
+            //CHỈ KHI Ở DƯỚI ĐẤT MỚI NHẢY ĐƯỢC
+            if(on_ground_ == true){
+                y_val_ = - PLAYER_JUMP_VAL;
+            }
+            //Nhảy là không chạm đất nữa
+            on_ground_ = false;
+            //Nhảy xong phải đưa về không
+            input_type_.jump_ = 0;
+        }
+        //Để đứng trên đất mà không rơi qua đất 
+        CheckToMap(map_data);
+        CenterEntityOnMap(map_data);
     }
-    //Để đứng trên đất mà không rơi qua đất 
-    CheckToMap(map_data);
-    CenterEntityOnMap(map_data);
+    if(come_back_time_ > 0){
+        come_back_time_ --;
+        if(come_back_time_ == 0){
+            if(x_pos_ > 256){
+                //4 TILE map
+                x_pos_ -= 256;
+                map_x_ -= 256;
+
+            }
+            else{
+                x_pos_ = 0;
+            }
+            //Nếu mà hết thời gian chờ thì nvat rơi từ trên xuống
+            //Ở trên cùng map
+            y_pos_ = 0;
+            x_val_ = 0;
+            y_val_ = 0;
+        }
+    }
 }
 
 void MainObject::CenterEntityOnMap(Map& map_data){
@@ -334,5 +360,7 @@ void MainObject:: CheckToMap(Map &map_data){
         x_pos_ = map_data.max_x_ - width_frame_ -1;
     }
 
-
+    if(y_pos_ > map_data.max_y_){
+        come_back_time_ = 60;
+    }
 }
