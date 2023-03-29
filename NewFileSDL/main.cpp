@@ -1,0 +1,111 @@
+
+#include"CommonFunc.h"
+#include "BaseObject.h"
+#include "game_map.h"
+#include "MainObject.h"
+BaseObject g_background;
+
+bool InitData()
+{
+    bool success = true;
+    int ret = SDL_Init(SDL_INIT_VIDEO);
+    if(ret < 0){
+        return false;
+    }
+    //Thiết lập chất lượng hình ảnh
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");   
+    g_window = SDL_CreateWindow("GAME", 
+                                SDL_WINDOWPOS_UNDEFINED, 
+                                SDL_WINDOWPOS_UNDEFINED, 
+                                SCREEN_WIDTH, 
+                                SCREEN_HEIGHT, 
+                                SDL_WINDOW_SHOWN);
+    if(g_window == NULL){
+        success = false;
+    }
+    else{
+        g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+        if(g_screen == NULL){
+            success = false;
+        }
+        else{
+            SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+            int imgFlags = IMG_INIT_PNG;
+            if(!(IMG_Init(imgFlags) && imgFlags)){
+                success = false;
+            }
+        }
+    }
+    return success;
+}
+
+bool LoadBackground()
+{   
+    bool ret = g_background.LoadImg("assets/img/map/background.png", g_screen);
+    if(ret == false){
+        return false;
+    }
+    return true;
+}          
+
+void close(){ 
+    g_background.Free();
+    SDL_DestroyRenderer(g_screen);
+    g_screen = NULL;
+    SDL_DestroyWindow(g_window);
+    g_window = NULL;
+    IMG_Quit();
+    SDL_Quit();
+}
+
+int main(int argc, char* argv[]){
+    if(InitData() == false){
+        return -1;
+    }
+    if(LoadBackground() == false){
+        return -1;
+    }
+
+    GameMap game_map;
+    //fill ảnh đất
+    //Đọc map viết bởi số 0 1 2 
+    char file_path[] = "assets/img/map/map01.dat";
+    game_map.LoadMap(file_path);
+    //Load các hình ảnh tương ứng vào ô 1 2 3
+    game_map.LoadTiles(g_screen);
+
+    //Khai báo và lấy hình ảnh nhân vật ban đầu là sang phải
+    MainObject p_player;
+    p_player.LoadImg("assets/img/map/player_right.png", g_screen);
+    p_player.set_clips();
+
+
+    bool is_quit = false;
+    while(!is_quit){
+        while(SDL_PollEvent( &g_event) != 0){
+            if( g_event.type == SDL_QUIT){
+                is_quit = true;
+            }
+            //Để lấy trạng thái các nút mình bấm trái phải
+            p_player.HandleInputAction(g_event, g_screen);
+        }
+
+        SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+        SDL_RenderClear(g_screen);
+
+        g_background.Render(g_screen, NULL);
+        //Vẽ map
+        //game_map.DrawMap(g_screen);
+        Map map_data = game_map.getMap();
+
+        p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
+        p_player.DoPlayer(map_data);
+        p_player.Show(g_screen); 
+
+        game_map.SetMap(map_data);
+        game_map.DrawMap(g_screen);
+        SDL_RenderPresent(g_screen);
+    }    
+    close();
+    return 0;
+}
