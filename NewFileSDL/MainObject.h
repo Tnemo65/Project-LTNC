@@ -1,8 +1,11 @@
 #ifndef MAIN_OBJECT_H
 #define MAIN_OBJECT_H
 
+#include <vector>
+
 #include "CommonFunc.h"
 #include "BaseObject.h"
+#include "BulletObject.h"
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
 #define PLAYER_SPEED 8
@@ -31,10 +34,21 @@ class MainObject : public BaseObject
         void CheckToMap(Map& map_data);
         //map_x, map_y là lưu vị trí bản đồ
         void SetMapXY(const int map_x, const int map_y){map_x_ = map_x; map_y_ = map_y;}
-        //
+        //Lấy vị trí trung tâm map
         void CenterEntityOnMap(Map& map_data);
+        //Update hình ảnh nhân vật
         void UpdateImagePlayer(SDL_Renderer* des);
+        //Cập nhật 1 vector chứa các viên đạn
+        void set_bullet_list(std::vector<BulletObject*> bullet_list){
+            p_bullet_list_ = bullet_list;
+        }
+        std::vector<BulletObject*> get_bullet_list() const {return  p_bullet_list_;}
+        void HandleBullet(SDL_Renderer* des);
+    
     private:
+        //Vector chứa những viên đạn
+        std::vector<BulletObject*> p_bullet_list_;
+
         //Khi bấm trái phải đi 1 lượng bao nhiêu
         float x_val_;
         float y_val_;

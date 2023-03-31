@@ -9,6 +9,7 @@ class BaseObject
         ~BaseObject();
         //Hàm set kích thước cho rect
         void SetRect(const int& x, const int& y){
+            //Vị trí của 1 đối tượng hình ảnh hiển thị trên màn hình
             rect_.x = x;
             rect_.y = y;
         }

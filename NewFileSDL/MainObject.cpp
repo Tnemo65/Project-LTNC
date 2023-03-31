@@ -140,6 +140,14 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                 UpdateImagePlayer(screen);
             }
             break;
+
+
+        case SDLK_UP:
+            {
+                input_type_.jump_ = 1;
+                //UpdateImagePlayer(screen);
+            }
+        break;
         }
     }
 
@@ -157,14 +165,64 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                 input_type_.left_ = 0;
             }
             break;
+        case SDLK_UP:
+        {
+            input_type_.jump_ = 0;
+        }
+        break;
         }
     }
-    if(events.type == SDL_MOUSEBUTTONDOWN){
-        if (events.button.button == SDL_BUTTON_RIGHT){
-            input_type_.jump_ = 1;
+     if(events.type == SDL_MOUSEBUTTONDOWN){
+    //     if (events.button.button == SDL_BUTTON_RIGHT){
+    //         input_type_.jump_ = 1;
+    //     }
+            if(events.button.button == SDL_BUTTON_LEFT){
+                BulletObject* p_bullet = new BulletObject();
+                p_bullet -> LoadImg("assets/img/map/player_bullet.png",screen);
+                //XÁC ĐỊNH ĐẦU RA CỦA ĐẠN
+                if(status_ == WALK_LEFT){
+                        //Set đang quay sang trái hay phải
+                        p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
+                        //Lấy vị trí hình ảnh viên đạn theo nhân vật
+                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.15);            
+                
+                }
+                else if(status_ == WALK_RIGHT){
+                        p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
+                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.15);            
+                }
+                //Set tốc độ bắn
+                p_bullet -> set_x_val(20);
+                //Trong map
+                p_bullet -> set_is_move(true);
+                //Nạp đạn vào băng
+                p_bullet_list_.push_back(p_bullet);
+        }
+     }
+}
+
+void MainObject::HandleBullet(SDL_Renderer* des){
+    for(int i = 0; i < p_bullet_list_.size(); i++){
+        BulletObject* p_bullet = p_bullet_list_.at(i);
+        //
+        if(p_bullet != NULL){
+            //Nếu vẫn trong map
+            if(p_bullet -> get_is_move() == true){
+                p_bullet ->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+                p_bullet -> Render(des);
+            }
+            //Nếu ra ngoài map thì xóa đạn đi
+            else{
+                p_bullet_list_.erase(p_bullet_list_.begin() +i);
+                if(p_bullet != NULL){
+                    //delete p_bullet;
+                    p_bullet = NULL;
+                }
+            }
         }
     }
 }
+
 //Di chuyển sang trái phải, rơi tự do
 void MainObject::DoPlayer(Map &map_data){
     //Nếu như nhân vật ở trong bản đồ thì xử lí, ngoài bản đồ thì thôi

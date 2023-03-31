@@ -4,6 +4,7 @@
 BaseObject::BaseObject()
 {
     p_object_ = NULL;
+    //Vị trí của 1 đối tượng hình ảnh hiển thị trên màn hình
     rect_.x = 0;
     rect_.y = 0;
     rect_.w = 0;
