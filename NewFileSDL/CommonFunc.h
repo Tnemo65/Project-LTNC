@@ -3,6 +3,8 @@
 
 #include<windows.h>
 #include<string>
+#include <vector>
+
 #include "src/include/SDL2/SDL.h"
 #include "src/include/SDL2/SDL_image.h"
 #include "src/include/SDL2/SDL_mixer.h"
@@ -29,6 +31,8 @@ const int RENDER_DRAW_COLOR = 0xff;
 #define TILE_SIZE 64
 #define MAX_MAP_X 400
 #define MAX_MAP_Y 10
+//Trong map01.dat là giá trị của ô chưa tiền
+#define STATE_MONEY 4
 
 //Trạng thái của nhân vật ->MainObject
 struct Input{

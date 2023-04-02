@@ -11,7 +11,6 @@ class BulletObject: public BaseObject
         enum BulletDir{
             DIR_RIGHT = 20,
             DIR_LEFT = 21,
-
         };
 
         void set_x_val(const int& xVal) {x_val_ = xVal;}

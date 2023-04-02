@@ -2,23 +2,33 @@
 
 MainObject::MainObject()
 {
+
     frame_ = 0;
+    //Tọa độ của nhân vật ...
     x_pos_ = 0;
     y_pos_ = 0;
+    //Giá trị tăng của x y khi di chuyển
     x_val_ = 0;
     y_val_ = 0;
+    //Chỉ số của khung hình (1 ô)
     width_frame_ = 0;
     height_frame_ = 0;
     status_ = WALK_NONE; //chưa biết trái phải
+    //Kiểm tra xem nhập từ bên ngoài hướng nào
     input_type_.left_ = 0;
     input_type_.right_ = 0;
     input_type_.jump_ = 0;
     input_type_.down_ =0;
     input_type_.up_ = 0; 
+    //Kiểm tra có va chạm không
     on_ground_ = false;
+
     map_x_ = 0;
     map_y_ = 0;
+    //Thời gian quay lại
     come_back_time_ = 0;
+    //Đếm tiền
+    money_count = 0;
 }
 
 MainObject::~MainObject()
@@ -145,7 +155,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
         case SDLK_UP:
             {
                 input_type_.jump_ = 1;
-                //UpdateImagePlayer(screen);
+                UpdateImagePlayer(screen);
             }
         break;
         }
@@ -184,15 +194,16 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                         //Set đang quay sang trái hay phải
                         p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
                         //Lấy vị trí hình ảnh viên đạn theo nhân vật
-                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.15);            
+                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
                 
                 }
                 else if(status_ == WALK_RIGHT){
                         p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
-                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.15);            
+                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.1);            
                 }
                 //Set tốc độ bắn
                 p_bullet -> set_x_val(20);
+                p_bullet -> set_y_val(20);
                 //Trong map
                 p_bullet -> set_is_move(true);
                 //Nạp đạn vào băng
@@ -241,7 +252,6 @@ void MainObject::DoPlayer(Map &map_data){
         else if(input_type_.right_ == 1){
             x_val_ += PLAYER_SPEED;
         }
-    
         if(input_type_.jump_ == 1){
             //CHỈ KHI Ở DƯỚI ĐẤT MỚI NHẢY ĐƯỢC
             if(on_ground_ == true){
@@ -278,12 +288,12 @@ void MainObject::DoPlayer(Map &map_data){
 
 void MainObject::CenterEntityOnMap(Map& map_data){
     //Nhân vật di chuyển nửa bản đồ thì di chuyển bản đồ
+    //x_pos_ giữa map, SCREEN_WIDTH/2 nửa map -> map_data.start_x_ là 0
     map_data.start_x_ = x_pos_ - (SCREEN_WIDTH/2) ;
     //Nếu mà cứ lùi thì k cho quay lại màn hình
     if(map_data.start_x_ < 0){
         map_data.start_x_ = 0;
     }
-    // 
     else if( map_data.start_x_ + SCREEN_WIDTH >= map_data.max_x_){
         map_data.start_x_ = map_data.max_x_ - SCREEN_WIDTH;
     }
@@ -324,32 +334,51 @@ void MainObject:: CheckToMap(Map &map_data){
         *               *
         *               *
         x1,y2********x2,y2
-    
-    
     */
 
     //Kiểm tra xem có đang nằm trong bản đồ không
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y){
         if(x_val_ > 0) //Di chuyển sang phải
         {   
-            //Kiểm tra xem ô bên phải có phải là ô trống hay không
-            if(map_data.tile[y1][x2] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE){
-                x_pos_ = x2 * TILE_SIZE; // Ra vị trí biên của frame nhân vật
-                //Nếu mà chạm tường thì x_pos_ chỉ dừng ở đó
-                //x_val_ = 0
-                x_pos_ -= width_frame_ + 1;
-                x_val_ = 0;
+            //Nếu ăn phải tiền thì ô tiền biến mất
+            int val1 = map_data.tile[y1][x2];
+            int val2 = map_data.tile[y2][x2];
+            if(val1 == STATE_MONEY || val2 == STATE_MONEY){
+                map_data.tile[y1][x2] = 0;
+                map_data.tile[y2][x2] = 0;
+                IncreaseMoney();
+            }
+            //Nếu không phải ô tiền thì nếu ô không phải rỗng thì bị chặn
+            else{
+                //Kiểm tra xem ô bên phải có phải là ô trống hay không
+                if(val1 != BLANK_TILE || val2 != BLANK_TILE){
+                    x_pos_ = x2 * TILE_SIZE; // Ra vị trí biên của frame nhân vật
+                    //Nếu mà chạm tường thì x_pos_ chỉ dừng ở đó
+                    //x_val_ = 0
+                    x_pos_ -= width_frame_ + 1;
+                    x_val_ = 0;
+                }
             }
         }
         //di chuyển sang trái
         else if (x_val_ < 0){
-            if(map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y2][x1] != BLANK_TILE){
-                //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
-                x_pos_ = (x1 + 1)*TILE_SIZE;
-                x_val_ = 0;
+            int val1 = map_data.tile[y1][x1];
+            int val2 = map_data.tile[y2][x1];
+            //Nếu ăn phải tiền thì ô tiền biến mất
+            if(val1 == STATE_MONEY || val2 == STATE_MONEY){
+                map_data.tile[y1][x1] = 0;
+                map_data.tile[y2][x1] = 0;
+                IncreaseMoney();
             }
-        }
-    }
+            else{
+                if(val1 != BLANK_TILE || val2 != BLANK_TILE){
+                    //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
+                    x_pos_ = (x1 + 1)*TILE_SIZE;
+                    x_val_ = 0;
+                }
+            }
+        }   
+    }    
 
                     //KIỂM TRA THEO CHIỀU DỌC
     int width_min = width_frame_ <TILE_SIZE ? width_frame_ :TILE_SIZE;
@@ -361,23 +390,40 @@ void MainObject:: CheckToMap(Map &map_data){
 
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y){
         //Rơi tự do
-        if(y_val_ >0){
-            if(map_data.tile[y2][x1] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE){
-                y_pos_ = y2 * TILE_SIZE;
-                y_pos_ -= (height_frame_ +1);
-                y_val_ = 0;
-                on_ground_ = true;
-                if(status_ == WALK_NONE){
-                    status_ = WALK_RIGHT;
+        if(y_val_ > 0){
+            int val1 = map_data.tile[y2][x1];
+            int val2 = map_data.tile[y2][x2];
+            if(val1 == STATE_MONEY || val2 == STATE_MONEY){
+                map_data.tile[y2][x1] = 0;
+                map_data.tile[y2][x2] = 0;
+                IncreaseMoney();
+            }
+            else{
+                if(val1 != BLANK_TILE || val2  != BLANK_TILE){
+                    y_pos_ = y2 * TILE_SIZE;
+                    y_pos_ -= (height_frame_ +1);
+                    y_val_ = 0;
+                    on_ground_ = true;
+                    if(status_ == WALK_NONE){
+                        status_ = WALK_RIGHT;
+                    }
                 }
-
             }
         }
-        else if( y_val_ <0){
-            if(map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y1][x2] != BLANK_TILE){
-                y_pos_ = (y1 + 1)*TILE_SIZE;
-                y_val_ = 0;
+         else if( y_val_ <0){
+            int val1 = map_data.tile[y1][x1];
+            int val2 = map_data.tile[y1][x2];
+            if(val1 == STATE_MONEY || val2 == STATE_MONEY){
+                map_data.tile[y1][x1] = 0;
+                map_data.tile[y1][x2] = 0;
+                IncreaseMoney();
             }
+            else{
+                if(val1 != BLANK_TILE ||val2 != BLANK_TILE){
+                     y_pos_ = (y1 + 1)*TILE_SIZE;
+                    y_val_ = 0;
+                }
+            } 
         }
     }
     x_pos_ += x_val_;
@@ -388,12 +434,16 @@ void MainObject:: CheckToMap(Map &map_data){
         x_pos_ = 0;
     }
     else if(x_pos_ + width_frame_ > map_data.max_x_){
-        x_pos_ = map_data.max_x_ - width_frame_ -1;
+        x_pos_ = map_data.max_x_ - width_frame_ - 1;
     }
 
     if(y_pos_ > map_data.max_y_){
         come_back_time_ = 60;
     }
+}
+
+void MainObject::IncreaseMoney(){
+    money_count ++;
 }
 
 void MainObject:: UpdateImagePlayer(SDL_Renderer * des){

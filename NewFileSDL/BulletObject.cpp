@@ -18,9 +18,8 @@ void BulletObject::HandleMove(const int& x_border, const int& y_border){
             is_move_ = false;
         }
     }
-    else if(bullet_dir_ == DIR_LEFT){
-        
-        rect_.x -= x_val_;
+    else if(bullet_dir_ == DIR_LEFT){ 
+        rect_.x -= x_val_ ;
         if(rect_.x < 0){
             is_move_ = false;
         }

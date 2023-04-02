@@ -9,7 +9,7 @@
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
 #define PLAYER_SPEED 8
-#define PLAYER_JUMP_VAL 15
+#define PLAYER_JUMP_VAL 25
 class MainObject : public BaseObject
 {
     public:
@@ -44,11 +44,12 @@ class MainObject : public BaseObject
         }
         std::vector<BulletObject*> get_bullet_list() const {return  p_bullet_list_;}
         void HandleBullet(SDL_Renderer* des);
+        void IncreaseMoney();
     
     private:
         //Vector chứa những viên đạn
         std::vector<BulletObject*> p_bullet_list_;
-
+        int money_count;
         //Khi bấm trái phải đi 1 lượng bao nhiêu
         float x_val_;
         float y_val_;
