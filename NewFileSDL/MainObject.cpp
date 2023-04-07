@@ -42,7 +42,7 @@ bool MainObject::LoadImg(std::string path, SDL_Renderer* screen){
     if(ret==true){
         //THAY ĐỔI FRAME Ở ĐÂY THAY 8 = 16
         //Làm cho chiều rộng của 1 frame là 60 < TileMap(kích thước 1 ô)
-        width_frame_ = rect_.w /8;
+        width_frame_ = rect_.w /7.995;
         height_frame_ = rect_.h;
     }
     return ret;
@@ -188,7 +188,9 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
     //     }
             if(events.button.button == SDL_BUTTON_LEFT){
                 BulletObject* p_bullet = new BulletObject();
-                p_bullet -> LoadImg("assets/img/map/player_bullet.png",screen);
+                //THAY ĐỔI LOẠI ĐẠN
+                p_bullet -> set_bullet_type(BulletObject::SPHERE_BULLET);
+                p_bullet -> LoadImgBullet(screen);
                 //XÁC ĐỊNH ĐẦU RA CỦA ĐẠN
                 if(status_ == WALK_LEFT){
                         //Set đang quay sang trái hay phải
@@ -213,7 +215,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
 }
 
 void MainObject::HandleBullet(SDL_Renderer* des){
-    for(int i = 0; i < p_bullet_list_.size(); i++){
+    for(int i = 0; i < (int)p_bullet_list_.size(); i++){
         BulletObject* p_bullet = p_bullet_list_.at(i);
         //
         if(p_bullet != NULL){
@@ -253,6 +255,7 @@ void MainObject::DoPlayer(Map &map_data){
             x_val_ += PLAYER_SPEED;
         }
         if(input_type_.jump_ == 1){
+            
             //CHỈ KHI Ở DƯỚI ĐẤT MỚI NHẢY ĐƯỢC
             if(on_ground_ == true){
                 y_val_ = - PLAYER_JUMP_VAL;

@@ -60,8 +60,32 @@ void close(){
     SDL_Quit();
 }
 std::vector<ThreatsObject*> MakeThreadList(){
+    //Lưu cả quái tĩnh và quái động
     std::vector<ThreatsObject*> list_threats;
+
+    //QUÁI DI CHUYỂN ĐỘNG
+    ThreatsObject* dynamic_threats = new ThreatsObject[20];
+    for(int i = 0; i < 20; i++){
+        ThreatsObject* p_threat = (dynamic_threats + i);
+        if(p_threat != NULL){
+            p_threat -> LoadImg("assets/img/map/threat_left.png",g_screen);
+            p_threat -> set_clips();
+            p_threat -> set_type_move(ThreatsObject::MOVE_IN_SPACE_THREAT);
+            p_threat -> set_x_pos (500 + i * 500);
+            p_threat -> set_y_pos(200);
+
+            int pos1 = p_threat -> get_x_pos() - 60;
+            int pos2 = p_threat -> get_x_pos() + 60;
+            p_threat -> SetAnimationPos(pos1, pos2);
+            p_threat -> set_input_left(1);
+            list_threats.push_back(p_threat);
+        }
+    }
+
+
+
     //SỐ LƯỢNG QUÁI
+    //QUÁI ĐỨNG IM
     ThreatsObject* threats_objs = new ThreatsObject[20];
     for(int i = 0; i < 20; i++){
         ThreatsObject* p_threat = (threats_objs +i);
@@ -69,8 +93,15 @@ std::vector<ThreatsObject*> MakeThreadList(){
             p_threat -> LoadImg("assets/img/map/threat_level.png", g_screen);
             p_threat -> set_clips();
             //Đặt vị trí quái threat
-            p_threat -> set_x_pos(700 + i*1200);
+            p_threat -> set_x_pos(700 + i*1200 - 50);
             p_threat -> set_y_pos(250);
+            p_threat -> set_type_move(ThreatsObject:: STATIC_THREAT);
+            //Để nó không di chuyển
+            p_threat -> set_input_left(0);
+            
+            //Thêm đạn cho quái đứng im
+            BulletObject* p_bullet = new BulletObject();
+            p_threat -> ThreatsObject::InitBullet (p_bullet, g_screen);
             list_threats.push_back(p_threat);
         }
     }
@@ -119,7 +150,6 @@ int main(int argc, char* argv[]){
 
         g_background.Render(g_screen, NULL);
         //Vẽ map
-        //game_map.DrawMap(g_screen);
         Map map_data = game_map.getMap();
         p_player.HandleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
@@ -130,12 +160,14 @@ int main(int argc, char* argv[]){
         game_map.DrawMap(g_screen);
 
         //Xử lí quái
-        for(int i = 0; i < threats_list.size(); i++){
+        for(int i = 0; i < (int)threats_list.size(); i++){
             //Tạo list quái
             ThreatsObject* p_threat = threats_list.at(i);
             if(p_threat != NULL){
                 p_threat -> SetMapXY(map_data.start_x_, map_data.start_y_);
+                p_threat -> ImpMoveType(g_screen);
                 p_threat -> DoPlayer(map_data);
+                p_threat -> MakeBullet(g_screen,SCREEN_WIDTH, SCREEN_HEIGHT);
                 p_threat -> Show(g_screen);
             }
         }
@@ -157,6 +189,15 @@ int main(int argc, char* argv[]){
         }
 
     }    
+
+    for(int i = 0; i < (int)threats_list.size(); i++){
+        ThreatsObject* p_threat = threats_list.at(i);
+        if(p_threat != NULL){
+            p_threat -> Free();
+            p_threat = NULL;
+        }
+    }
+    threats_list.clear();
     close();
     return 0;
 }

@@ -10,6 +10,13 @@ ThreatsObject :: ThreatsObject(){
     on_ground_ = false;
     come_back_time_ = 0;
     frame_ = 0;
+
+    animation_a_ = 0;
+    animation_b_ = 0;
+    //Khởi đầu là quay trái
+    input_type_.left_ = 0;
+    type_move_ = STATIC_THREAT;
+
 }
 
 ThreatsObject::~ThreatsObject(){
@@ -90,25 +97,38 @@ void ThreatsObject :: Show(SDL_Renderer* des){
         if(y_val_ >= THREAT_MAX_FALL_SPEED){
             y_val_ = THREAT_MAX_FALL_SPEED;
         }
+        //x_val_ cứ tăng x_pos_ được cộng x_val_ ở cuối hàm CheckToMap cho đến khi ở hàm ImpMoveType thì chặn 2 đầu a b, đến a thì quay phải, đến b thì trái
+        if(input_type_.left_ == 1){
+            x_val_ -= THREAT_SPEED;
+        }
+        else if(input_type_.right_ == 1){
+            x_val_ += THREAT_SPEED ;
+        }
         CheckToMap(gMap);
     }
     else if(come_back_time_ > 0){
         come_back_time_ --;
         if( come_back_time_ == 0){
-            x_val_ = 0;
-            y_val_ = 0;
-            if(x_pos_ > 256){
-                x_pos_ -= 256;
-            }
-            else{
-                x_pos_ = 0;
-            }
-            y_pos_ = 0;
-            come_back_time_ = 0;        
+            InitThreats();  
         }
     }
  }
-
+void ThreatsObject::InitThreats(){
+    x_val_ = 0;
+    y_val_ = 0;
+    if(x_pos_ > 256){
+        x_pos_ -= 256;
+        //Trừ cả khoảng luôn 
+        animation_a_ -= 256;
+        animation_b_ -= 256;
+    }
+    else{
+        x_pos_ = 0;
+    }
+    y_pos_ = 0;
+    come_back_time_ = 0;     
+    input_type_.left_ = 1;   
+}
  void ThreatsObject::CheckToMap(Map& map_data){
     //Định vị trí đầu cuối
     int x1 = 0;
@@ -196,6 +216,7 @@ void ThreatsObject :: Show(SDL_Renderer* des){
             }
         }
     }
+    //XPOS CỨ TĂNG DẦN
     x_pos_ += x_val_;
     y_pos_ += y_val_;
     //Lùi quá mép bản đồ
@@ -211,3 +232,82 @@ void ThreatsObject :: Show(SDL_Renderer* des){
         come_back_time_ = 60;
     }
 }
+
+void ThreatsObject :: ImpMoveType(SDL_Renderer* screen){
+    //Đứng im 1 chỗ
+    if(type_move_ == STATIC_THREAT){
+        ;
+    }
+    //Nếu không thì di chuyển
+    else{
+        //Đứng trên mặt đất mới di chuyển
+        if(on_ground_ == true){
+            if(x_pos_ > animation_b_){
+                input_type_.left_ = 1;
+                input_type_.right_ = 0;
+                LoadImg("assets/img/map/threat_left.png", screen);
+            }
+            else if(x_pos_ < animation_a_){
+                input_type_.right_ = 1;
+                input_type_.left_ = 0;
+                LoadImg("assets/img/map/threat_right.png", screen);
+            }
+        }
+        else{
+            if(input_type_.left_ == 1){
+                LoadImg("assets/img/map/threat_left.png", screen);
+            }
+            //Bổ sung
+            else if(input_type_.right_ == 1){
+                LoadImg("assets/img/map/threat_right.png", screen);
+            }
+        }
+    }
+}
+
+void ThreatsObject:: InitBullet(BulletObject* p_bullet, SDL_Renderer* screen){
+    if(p_bullet != NULL){
+        p_bullet -> set_bullet_type(BulletObject::LASER_BULLET);
+        bool ret = p_bullet -> LoadImgBullet(screen);
+        if(ret == true){
+            p_bullet -> set_is_move(true);
+            p_bullet -> set_bullet_dir(BulletObject:: DIR_LEFT);
+            //Vị trí viên đạn bay ra
+            p_bullet -> SetRect (rect_.x + 5, rect_.y + 15);
+            //Tốc độ đạn
+            p_bullet -> set_x_val(10);
+            bullet_list_.push_back(p_bullet);
+        }
+    }
+}
+
+void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit){
+    for(int i = 0; i < (int) bullet_list_.size(); i++){
+        BulletObject* p_bullet = bullet_list_.at(i);
+        if(p_bullet != NULL){
+            //Nếu được di chuyển
+            if(p_bullet-> get_is_move() ){
+
+                int bullet_distance = rect_.x + width_frame_ - p_bullet->GetRect().x;
+
+                if(bullet_distance < 300 && bullet_distance > 0){
+                    p_bullet -> HandleMove(x_limit, y_limit);
+                    p_bullet -> Render (screen);
+
+                }
+                else{
+                    p_bullet ->set_is_move(false);
+                    
+                }
+            }
+            //Nếu đi quá màn
+            else{
+                p_bullet -> set_is_move(true);
+                p_bullet -> SetRect(rect_.x + 5, rect_.y +15);
+            }
+        }
+    }
+}
+
+//x_pos_ chỉ số ứng với toàn bộ map 0 -> 25000
+//rect_.x là chỉ số với màn thôi 0 ->1280
