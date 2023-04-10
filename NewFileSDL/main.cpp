@@ -149,7 +149,9 @@ int main(int argc, char* argv[]){
         return -1;
     }
     exp_main.set_clip();
-
+    
+    //SỐ MẠNG
+    int num_die = 0;
 
     bool is_quit = false;
     while(!is_quit){
@@ -224,18 +226,25 @@ int main(int argc, char* argv[]){
                         SDL_RenderPresent(g_screen);
                     }
 
-                    int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
-                    char* message = new char[size];
-                    WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, message, size, NULL, NULL);
-                    if (MessageBoxA(NULL, message, "Info", MB_OK | MB_ICONSTOP) == IDOK){
-                        p_threat ->Free();
-                        close();
-                        SDL_Quit();
-                        return 0;
+                    num_die++;
+                    if(num_die <= 3){
+                        p_player.SetRect(0,0);
+                        p_player.set_comeback_time(60);
+                        SDL_Delay(1000);
+                        continue;
+                    }
+                    else{
+                        int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
+                        char* message = new char[size];
+                        WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, message, size, NULL, NULL);
+                        if (MessageBoxA(NULL, message, "Info", MB_OK | MB_ICONSTOP) == IDOK){
+                            p_threat ->Free();
+                            close();
+                            SDL_Quit();
+                            return 0;
+                        }
                     }
                 }
-
-
             }
         }
         //Lấy frame là 1 ô ảnh
