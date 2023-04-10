@@ -7,7 +7,7 @@ class BulletObject: public BaseObject
 {
     public:
         BulletObject();
-        ~BulletObject();
+        virtual ~BulletObject();
         enum BulletDir{
             DIR_RIGHT = 20,
             DIR_LEFT = 21,

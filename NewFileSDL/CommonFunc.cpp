@@ -1,18 +1,19 @@
 //#include "stdafx.h"
 #include "CommonFunc.h"
 
-bool SDLCommonFunc:: CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2){
-  int left_a = object1.x;
-  int right_a = object1.x + object1.w;
-  int top_a = object1.y;
-  int bottom_a = object1.y + object1.h;
+bool SDLCommonFunc::CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2) 
+{
+  int left_a = object1.x + 12;
+  int right_a = object1.x + object1.w - 12;
+  int top_a = object1.y + 6;
+  int bottom_a = object1.y + object1.h - 6;
  
-  int left_b = object2.x;
-  int right_b = object2.x + object2.w;
-  int top_b = object2.y;
-  int bottom_b = object2.y + object2.h;
+  int left_b = object2.x + 12;
+  int right_b = object2.x + object2.w - 12;
+  int top_b = object2.y + 6;
+  int bottom_b = object2.y + object2.h - 6;
  
-  // TH1 1: size object 1 < size object 2
+  // Case 1: size object 1 < size object 2
   if (left_a > left_b && left_a < right_b)
   {
     if (top_a > top_b && top_a < bottom_b)
@@ -45,7 +46,7 @@ bool SDLCommonFunc:: CheckCollision(const SDL_Rect& object1, const SDL_Rect& obj
     }
   }
   
-  // TH 2: size object 1 < size object 2
+  // Case 2: size object 1 < size object 2
   if (left_b > left_a && left_b < right_a)
   {
     if (top_b > top_a && top_b < bottom_a)
@@ -85,5 +86,4 @@ bool SDLCommonFunc:: CheckCollision(const SDL_Rect& object1, const SDL_Rect& obj
   }
  
   return false;
-
 }

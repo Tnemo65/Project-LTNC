@@ -169,6 +169,39 @@ int main(int argc, char* argv[]){
                 p_threat -> DoPlayer(map_data);
                 p_threat -> MakeBullet(g_screen,SCREEN_WIDTH, SCREEN_HEIGHT);
                 p_threat -> Show(g_screen);
+                
+                //Đạn của quái với nhân vật
+                SDL_Rect rect_player = p_player.GetRectFrame();
+                bool bCol1 = false;
+                //t = threat
+                std::vector <BulletObject*> tBullet_list = p_threat -> get_bullet_list();
+                for(int jj = 0; jj < (int)tBullet_list.size(); ++jj){
+                     //Lấy ra 1 phần tử
+                    BulletObject* pt_bullet = tBullet_list.at(jj);
+                    if(pt_bullet !=NULL){
+                        bCol1 = SDLCommonFunc::CheckCollision(pt_bullet->GetRect(), rect_player);
+                        if(bCol1 == true ){
+                            p_threat -> RemoveBullet(jj);
+                            break;
+                        }                        
+                    } 
+                } 
+                // //Người chạm quái
+                SDL_Rect rect_threat = p_threat -> GetRectFrame();
+                bool bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
+                if(bCol1 || bCol2){
+                    int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
+                    char* message = new char[size];
+                    WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, message, size, NULL, NULL);
+                    if (MessageBoxA(NULL, message, "Info", MB_OK | MB_ICONSTOP) == IDOK){
+                        p_threat ->Free();
+                        close();
+                        SDL_Quit();
+                        return 0;
+                    }
+                }
+
+
             }
         }
         //XỬ LÍ VA CHẠM ĐẠN VÀ QUÁI
@@ -201,12 +234,9 @@ int main(int argc, char* argv[]){
                             threats_list.erase(threats_list.begin() + t);
                         }  
                     }
-                }
+                }   
             }
         }
-
-
-
         SDL_RenderPresent(g_screen);
         //Thời gian thực sự trôi qua
         int real_imp_time = fps_timer.get_ticks();

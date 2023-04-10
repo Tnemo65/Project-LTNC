@@ -48,6 +48,16 @@ bool MainObject::LoadImg(std::string path, SDL_Renderer* screen){
     return ret;
 }
 
+SDL_Rect MainObject :: GetRectFrame(){
+    SDL_Rect rect;
+    rect.x = rect_.x;
+    rect.y = rect_.y;
+    rect.w = rect_.x/8;
+    rect.h = rect_.h;
+    return rect;
+}
+
+
 //Thiết lập hình cắt 
 void MainObject::set_clips(){
     //Kiểm tra kích thước được thiết lập chưa
@@ -483,6 +493,7 @@ void MainObject :: RemoveBullet(const int& idx){
         BulletObject* p_bullet = p_bullet_list_.at(idx);
         p_bullet_list_.erase(p_bullet_list_.begin() + idx);
         if(p_bullet){
+            delete p_bullet;
             p_bullet = NULL;
         }
     }

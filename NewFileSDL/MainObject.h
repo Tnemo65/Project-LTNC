@@ -39,14 +39,14 @@ class MainObject : public BaseObject
         //Update hình ảnh nhân vật
         void UpdateImagePlayer(SDL_Renderer* des);
         //Cập nhật 1 vector chứa các viên đạn
+        SDL_Rect GetRectFrame();
         void set_bullet_list(std::vector<BulletObject*> bullet_list){
             p_bullet_list_ = bullet_list;
         }
         std::vector<BulletObject*> get_bullet_list() const {return  p_bullet_list_;}
         void HandleBullet(SDL_Renderer* des);
-        void IncreaseMoney();
         void RemoveBullet(const int& idx);
-    
+        void IncreaseMoney();
     private:
         //Vector chứa những viên đạn
         std::vector<BulletObject*> p_bullet_list_;

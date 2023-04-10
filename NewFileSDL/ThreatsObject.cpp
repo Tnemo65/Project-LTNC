@@ -311,3 +311,25 @@ void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const
 
 //x_pos_ chỉ số ứng với toàn bộ map 0 -> 25000
 //rect_.x là chỉ số với màn thôi 0 ->1280
+
+void ThreatsObject :: RemoveBullet(const int& idx){
+    int size = bullet_list_.size();
+    //Có ít nhất 1 viên và viên cần xóa phải là 1 trong số viên đã được bắn ra
+    if(size > 0 && idx < size){
+        BulletObject* p_bullet = bullet_list_.at(idx);
+        bullet_list_.erase(bullet_list_.begin() + idx);
+        if(p_bullet != NULL){
+            delete p_bullet;
+            p_bullet = NULL;
+        }
+    }
+}
+
+SDL_Rect ThreatsObject :: GetRectFrame(){
+    SDL_Rect rect;
+    rect.x = rect_.x;
+    rect.y = rect_.y;
+    rect.w = width_frame_;
+    rect.h = height_frame_;
+    return rect;
+}

@@ -52,7 +52,8 @@ public:
 
     void InitBullet(BulletObject* p_bullet, SDL_Renderer* screen);
     void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit);
-
+    void RemoveBullet(const int& idx);
+    SDL_Rect GetRectFrame();
 private:
     //Giới hạn x y của bản đồ
     int map_x_;
