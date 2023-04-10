@@ -12,7 +12,7 @@ ExplosionObject::~ExplosionObject(){
 bool ExplosionObject:: LoadImg(std::string path, SDL_Renderer* screen){
     bool ret = BaseObject::LoadImg(path, screen);
     if(ret == true){
-        frame_width_ = rect_.w /NUM_FRAME_EXP;
+        frame_width_ = rect_.w /NUM_FRAME_EXP  ;
         frame_height_ = rect_.h;
     }
     return ret;
@@ -67,9 +67,14 @@ void ExplosionObject::set_clip(){
 void ExplosionObject::Show(SDL_Renderer* screen){
     SDL_Rect* current_clip = &frame_clip_[frame_];
     SDL_Rect render_quad = {rect_.x, rect_.y, frame_width_, frame_height_};
+    float scale_factor = 0.5f;
     if(current_clip != NULL){
-        render_quad.w = current_clip -> w;
-        render_quad.h = current_clip -> h;
+        //Thu nhỏ tỉ lệ hình ảnh của vụ nổ và cập nhật vị trí vụ nổ
+        render_quad.w = static_cast<int>(current_clip->w * scale_factor);
+        render_quad.h = static_cast<int>(current_clip->h * scale_factor);
+        render_quad.x = rect_.x  + render_quad.w / 2 + 15; // Cập nhật vị trí x
+        render_quad.y = rect_.y  + render_quad.h / 2 + 25; // Cập nhật vị trí y
+
     }
     SDL_RenderCopy(screen, p_object_, current_clip, &render_quad);
 }

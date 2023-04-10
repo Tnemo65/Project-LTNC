@@ -18,8 +18,8 @@ public:
     }
     virtual bool LoadImg(std::string path, SDL_Renderer* screen);
     void Show(SDL_Renderer* screen);
-    int get_frame_width() const {return frame_width_;}
-    int get_frame_height() const {return frame_height_;}
+    int get_frame_width() const {return frame_width_ ;}
+    int get_frame_height() const {return frame_height_ ;}
 private:
     int frame_width_;
     int frame_height_;

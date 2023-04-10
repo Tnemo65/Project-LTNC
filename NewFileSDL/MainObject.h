@@ -47,6 +47,8 @@ class MainObject : public BaseObject
         void HandleBullet(SDL_Renderer* des);
         void RemoveBullet(const int& idx);
         void IncreaseMoney();
+        int get_frame_width() const {return width_frame_;}
+        int get_frame_height() const {return height_frame_;}
     private:
         //Vector chứa những viên đạn
         std::vector<BulletObject*> p_bullet_list_;

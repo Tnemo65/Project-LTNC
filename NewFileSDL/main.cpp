@@ -143,6 +143,13 @@ int main(int argc, char* argv[]){
     }
     exp_threat.set_clip();
 
+    ExplosionObject exp_main;
+    bool mRet = exp_main.LoadImg("assets/img/map/exp3.png", g_screen);
+    if(mRet == false){
+        return -1;
+    }
+    exp_main.set_clip();
+
 
     bool is_quit = false;
     while(!is_quit){
@@ -200,6 +207,23 @@ int main(int argc, char* argv[]){
                 SDL_Rect rect_threat = p_threat -> GetRectFrame();
                 bool bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
                 if(bCol1 || bCol2){
+
+                    //Vụ nổ khi nhân vật chạm đạn laser or quái
+                    int frame_exp_width = exp_main.get_frame_width();
+                    int frame_exp_height = exp_main.get_frame_height();
+                    for(int ex = 0; ex < NUM_FRAME_EXP; ex++){
+                        //Vị trí đặt vụ nổ
+                        //Vụ nổ xảy ra ở GIỮA Ô HÌNH
+                        //-> vị trí = đầu của ô + độ dài nửa ô
+                        int x_pos = (p_player.GetRect().x + p_player.get_frame_width() * 0.5 )- frame_exp_width * 0.5 -10;
+                        int y_pos = (p_player.GetRect().y + p_player.get_frame_height() * 0.5)- frame_exp_height * 0.5 - 20;
+                        
+                        exp_threat.set_frame(ex);
+                        exp_threat.SetRect(x_pos, y_pos);
+                        exp_threat.Show(g_screen);
+                        SDL_RenderPresent(g_screen);
+                    }
+
                     int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
                     char* message = new char[size];
                     WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, message, size, NULL, NULL);
@@ -214,7 +238,6 @@ int main(int argc, char* argv[]){
 
             }
         }
-
         //Lấy frame là 1 ô ảnh
         int frame_exp_width = exp_threat.get_frame_width();
         int frame_exp_height = exp_threat.get_frame_height();
@@ -242,6 +265,7 @@ int main(int argc, char* argv[]){
                         SDL_Rect bRect = p_bullet ->GetRect();
                         bool bCol = SDLCommonFunc:: CheckCollision(bRect, tRect);
                         if(bCol == true){
+
                             //Tạo hiệu ứng nổ
                             for(int ex = 0; ex < NUM_FRAME_EXP; ex++){
                                 //Vị trí đặt vụ nổ
