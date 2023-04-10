@@ -45,6 +45,7 @@ class MainObject : public BaseObject
         std::vector<BulletObject*> get_bullet_list() const {return  p_bullet_list_;}
         void HandleBullet(SDL_Renderer* des);
         void IncreaseMoney();
+        void RemoveBullet(const int& idx);
     
     private:
         //Vector chứa những viên đạn

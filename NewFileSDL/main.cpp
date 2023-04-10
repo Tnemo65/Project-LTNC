@@ -171,6 +171,42 @@ int main(int argc, char* argv[]){
                 p_threat -> Show(g_screen);
             }
         }
+        //XỬ LÍ VA CHẠM ĐẠN VÀ QUÁI
+        //Lấy danh sách các viên đạn
+        std::vector <BulletObject*> bullet_arr = p_player.get_bullet_list();
+        for(int r = 0; r < (int)bullet_arr.size(); ++r){
+            //Lấy từng viên ra
+            BulletObject* p_bullet = bullet_arr.at(r);
+            if(p_bullet != NULL){
+                for(int t = 0; t < (int)threats_list.size(); ++t){
+                    ThreatsObject* obj_threat = threats_list.at(t);
+                    if(obj_threat != NULL){
+                        //LẤY TỪNG CHỈ SỐ CỦA QUÁI
+                        SDL_Rect tRect;
+                        //Tọa độ bên trái 
+                        tRect.x = obj_threat->GetRect().x;
+                        tRect.y = obj_threat->GetRect().y;
+                        //Rộng lấy 1 frame thôi
+                        //Tọa độ dùng để lấy bên phải vì right = x + width. x là bên trái
+                        tRect.w = obj_threat ->get_width_frame();
+                        tRect.h = obj_threat -> get_height_frame();
+                        //Viên đạn không có frame nên k cần lấy hết
+                        SDL_Rect bRect = p_bullet ->GetRect();
+                        bool bCol = SDLCommonFunc:: CheckCollision(bRect, tRect);
+                        if(bCol == true){
+                            //Xóa đạn
+                            p_player.RemoveBullet(r);
+                            obj_threat -> Free();
+                            //Trung đạn thì quái chết
+                            threats_list.erase(threats_list.begin() + t);
+                        }  
+                    }
+                }
+            }
+        }
+
+
+
         SDL_RenderPresent(g_screen);
         //Thời gian thực sự trôi qua
         int real_imp_time = fps_timer.get_ticks();

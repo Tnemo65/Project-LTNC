@@ -475,3 +475,15 @@ void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
         }
     } 
 }
+
+void MainObject :: RemoveBullet(const int& idx){
+    int size = p_bullet_list_.size();
+    //Có ít nhất 1 viên và viên cần xóa phải là 1 trong số viên đã được bắn ra
+    if(size > 0 && idx < size){
+        BulletObject* p_bullet = p_bullet_list_.at(idx);
+        p_bullet_list_.erase(p_bullet_list_.begin() + idx);
+        if(p_bullet){
+            p_bullet = NULL;
+        }
+    }
+}
