@@ -5,6 +5,7 @@
 #include "MainObject.h"
 #include "ImpTimer.h"
 #include "ThreatsObject.h"
+#include "ExplosionObject.h"
 BaseObject g_background;
 
 bool InitData()
@@ -134,6 +135,15 @@ int main(int argc, char* argv[]){
     //Tạo quái
     std:: vector <ThreatsObject*> threats_list = MakeThreadList();
 
+
+    ExplosionObject exp_threat;
+    bool tRet = exp_threat.LoadImg("assets/img/map/exp3.png", g_screen);
+    if(tRet == false){
+        return -1;
+    }
+    exp_threat.set_clip();
+
+
     bool is_quit = false;
     while(!is_quit){
         fps_timer.start();
@@ -204,6 +214,11 @@ int main(int argc, char* argv[]){
 
             }
         }
+
+        //Lấy frame là 1 ô ảnh
+        int frame_exp_width = exp_threat.get_frame_width();
+        int frame_exp_height = exp_threat.get_frame_height();
+
         //XỬ LÍ VA CHẠM ĐẠN VÀ QUÁI
         //Lấy danh sách các viên đạn
         std::vector <BulletObject*> bullet_arr = p_player.get_bullet_list();
@@ -227,6 +242,19 @@ int main(int argc, char* argv[]){
                         SDL_Rect bRect = p_bullet ->GetRect();
                         bool bCol = SDLCommonFunc:: CheckCollision(bRect, tRect);
                         if(bCol == true){
+                            //Tạo hiệu ứng nổ
+                            for(int ex = 0; ex < NUM_FRAME_EXP; ex++){
+                                //Vị trí đặt vụ nổ
+                                //Vụ nổ xảy ra ở GIỮA Ô HÌNH
+                                //-> vị trí = đầu của ô + độ dài nửa ô
+                                int x_pos = p_bullet ->GetRect().x - frame_exp_width * 0.5 + 9;
+                                int y_pos = p_bullet ->GetRect().y - frame_exp_height * 0.5;
+                                
+                                exp_threat.set_frame(ex);
+                                exp_threat.SetRect(x_pos, y_pos);
+                                exp_threat.Show(g_screen);
+                            }
+
                             //Xóa đạn
                             p_player.RemoveBullet(r);
                             obj_threat -> Free();
