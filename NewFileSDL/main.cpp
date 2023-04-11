@@ -7,6 +7,7 @@
 #include "ThreatsObject.h"
 #include "ExplosionObject.h"
 #include "TextObject.h"
+#include "PlayerPower.h"
 BaseObject g_background;
 TTF_Font* font_time = NULL;
 using namespace std;
@@ -143,6 +144,15 @@ int main(int argc, char* argv[]){
     p_player.LoadImg("assets/img/map/player_right.png", g_screen);
     p_player.set_clips();
 
+    //Các hình ảnh tĩnh in lên chỉ số
+    //Mạng
+    PlayerPower player_power;
+    player_power.Init(g_screen);
+    //Tiền
+    PlayerMoney player_money;
+    player_money.Init(g_screen);
+    player_money.SetPos(SCREEN_WIDTH*0.5 - 300 , 8);
+
     //Tạo quái
      vector <ThreatsObject*> threats_list = MakeThreadList();
 
@@ -201,6 +211,8 @@ int main(int argc, char* argv[]){
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);
 
+        player_power.Show(g_screen);
+        player_money.Show(g_screen);
         //Xử lí quái
         for(int i = 0; i < (int)threats_list.size(); i++){
             //Tạo list quái
@@ -254,6 +266,8 @@ int main(int argc, char* argv[]){
                         p_player.SetRect(0,0);
                         p_player.set_comeback_time(60);
                         SDL_Delay(1000);
+                        player_power.Decrease();
+                        player_power.Render(g_screen);
                         continue;
                     }
                     else{
@@ -363,9 +377,6 @@ int main(int argc, char* argv[]){
         money_game.SetText(money_str);
         money_game.LoadFromRenderText(font_time,g_screen);
         money_game.RenderText(g_screen, SCREEN_WIDTH*0.5 - 250, 15);
-
-
-
 
 
         SDL_RenderPresent(g_screen);
