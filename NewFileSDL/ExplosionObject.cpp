@@ -1,5 +1,5 @@
 #include "ExplosionObject.h"
-
+using namespace std;
 ExplosionObject::ExplosionObject(){
     frame_height_ = 0;
     frame_width_ = 0;
@@ -9,7 +9,7 @@ ExplosionObject::ExplosionObject(){
 ExplosionObject::~ExplosionObject(){
 }
 
-bool ExplosionObject:: LoadImg(std::string path, SDL_Renderer* screen){
+bool ExplosionObject:: LoadImg(string path, SDL_Renderer* screen){
     bool ret = BaseObject::LoadImg(path, screen);
     if(ret == true){
         frame_width_ = rect_.w /NUM_FRAME_EXP  ;

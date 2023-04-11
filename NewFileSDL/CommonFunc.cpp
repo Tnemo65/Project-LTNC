@@ -1,8 +1,8 @@
-//#include "stdafx.h"
 #include "CommonFunc.h"
-
+using namespace std;
 bool SDLCommonFunc::CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2) 
 {
+  //Khoảng cách để biết chạm vào là chết
   int left_a = object1.x + 12;
   int right_a = object1.x + object1.w - 12;
   int top_a = object1.y + 6;

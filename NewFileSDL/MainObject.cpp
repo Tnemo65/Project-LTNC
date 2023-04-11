@@ -1,5 +1,5 @@
 #include"MainObject.h"
-
+using namespace std;
 MainObject::MainObject()
 {
 
@@ -37,7 +37,7 @@ MainObject::~MainObject()
 }
 
 //Tải 1 hình ảnh và lấy kích thước ảnh
-bool MainObject::LoadImg(std::string path, SDL_Renderer* screen){
+bool MainObject::LoadImg(string path, SDL_Renderer* screen){
     bool ret = BaseObject::LoadImg(path, screen);
     if(ret==true){
         //THAY ĐỔI FRAME Ở ĐÂY THAY 8 = 16

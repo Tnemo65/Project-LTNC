@@ -5,7 +5,7 @@
 #include "BaseObject.h"
 
 #define NUM_FRAME_EXP 8
-
+using namespace std;
 class ExplosionObject : public BaseObject
 {
 public:
@@ -16,7 +16,7 @@ public:
     void set_frame(const int& fr){
         frame_ = fr;
     }
-    virtual bool LoadImg(std::string path, SDL_Renderer* screen);
+    virtual bool LoadImg(string path, SDL_Renderer* screen);
     void Show(SDL_Renderer* screen);
     int get_frame_width() const {return frame_width_ ;}
     int get_frame_height() const {return frame_height_ ;}

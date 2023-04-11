@@ -1,7 +1,7 @@
 #ifndef BASE_OBJECT_H_
 #define BASE_OBJECT_H_
 #include "CommonFunc.h"
-
+using namespace std;
 class BaseObject
 {
     public:
@@ -20,7 +20,7 @@ class BaseObject
         //Hàm load ảnh bitmap lên đối tượng p_object
         //Rồi dùng p_object gán lên màn hình
         //VIRTUAL để làm gì -> để có thể tái sử dụng mà không cần đúng phải là đối tượng trong class đó
-        virtual bool LoadImg(std:: string path, SDL_Renderer* screen);
+        virtual bool LoadImg(string path, SDL_Renderer* screen);
         void Render(SDL_Renderer* des, const SDL_Rect* clip = NULL);
         void Free();
     protected:

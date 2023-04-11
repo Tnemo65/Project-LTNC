@@ -1,6 +1,7 @@
 //#include "stdafx.h"
 #include"BaseObject.h"
 //Định nghĩa hàm constructor
+using namespace std;
 BaseObject::BaseObject()
 {
     p_object_ = NULL;
@@ -15,7 +16,7 @@ BaseObject::~BaseObject()
     Free();
 }
 
-bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen)
+bool BaseObject::LoadImg(string path, SDL_Renderer* screen)
 {
     Free();
     SDL_Texture* new_texture = NULL;

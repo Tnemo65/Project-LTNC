@@ -10,6 +10,7 @@
 #define MAX_FALL_SPEED 10
 #define PLAYER_SPEED 8
 #define PLAYER_JUMP_VAL 25
+using namespace std;
 class MainObject : public BaseObject
 {
     public:
@@ -23,7 +24,7 @@ class MainObject : public BaseObject
             WALK_LEFT = 2,
         };
 
-        bool LoadImg (std::string path, SDL_Renderer* screen);
+        bool LoadImg (string path, SDL_Renderer* screen);
         //Hiện ảnh theo frame
         void Show(SDL_Renderer* screen);
         //Hàm xử lí khi bấm trái phải
@@ -40,19 +41,20 @@ class MainObject : public BaseObject
         void UpdateImagePlayer(SDL_Renderer* des);
         //Cập nhật 1 vector chứa các viên đạn
         SDL_Rect GetRectFrame();
-        void set_bullet_list(std::vector<BulletObject*> bullet_list){
+        void set_bullet_list(vector<BulletObject*> bullet_list){
             p_bullet_list_ = bullet_list;
         }
-        std::vector<BulletObject*> get_bullet_list() const {return  p_bullet_list_;}
+        vector<BulletObject*> get_bullet_list() const {return  p_bullet_list_;}
         void HandleBullet(SDL_Renderer* des);
         void RemoveBullet(const int& idx);
         void IncreaseMoney();
         int get_frame_width() const {return width_frame_;}
         int get_frame_height() const {return height_frame_;}
         void set_comeback_time(const int& cb_time) {come_back_time_ = cb_time;}
+        int GetMoneyCount() const {return money_count;}
     private:
         //Vector chứa những viên đạn
-        std::vector<BulletObject*> p_bullet_list_;
+        vector<BulletObject*> p_bullet_list_;
         int money_count;
         //Khi bấm trái phải đi 1 lượng bao nhiêu
         float x_val_;
