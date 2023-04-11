@@ -8,6 +8,7 @@
 #include "ExplosionObject.h"
 #include "TextObject.h"
 #include "PlayerPower.h"
+#include "Geometric.h"
 BaseObject g_background;
 TTF_Font* font_time = NULL;
 using namespace std;
@@ -210,6 +211,17 @@ int main(int argc, char* argv[]){
 
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);
+
+        //Draw Geometric  Vẽ Khung
+        GeometricFormat rectangle_size(0, 0, SCREEN_WIDTH, 40);
+        //MÀU KHUNG
+        ColorData color_data(252, 79, 75);
+        Geometric::RenderRectangle(rectangle_size, color_data, g_screen);
+        
+        GeometricFormat outLineSize(1, 1, SCREEN_WIDTH - 1, 38);
+        ColorData color_data2(255,255,255);
+        Geometric::RenderOutline(outLineSize, color_data2, g_screen);
+
 
         player_power.Show(g_screen);
         player_money.Show(g_screen);
