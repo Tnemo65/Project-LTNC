@@ -6,6 +6,7 @@
 #include "CommonFunc.h"
 #include "BaseObject.h"
 #include "BulletObject.h"
+#include "PlayerPower.h"
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
 #define PLAYER_SPEED 8
@@ -52,6 +53,9 @@ class MainObject : public BaseObject
         int get_frame_height() const {return height_frame_;}
         void set_comeback_time(const int& cb_time) {come_back_time_ = cb_time;}
         int GetMoneyCount() const {return money_count;}
+        
+
+    
     private:
         //Vector chứa những viên đạn
         vector<BulletObject*> p_bullet_list_;

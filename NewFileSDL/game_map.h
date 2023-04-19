@@ -34,4 +34,5 @@ class GameMap
         TileMat tile_mat[MAX_TILES];
 };
 
+
 #endif

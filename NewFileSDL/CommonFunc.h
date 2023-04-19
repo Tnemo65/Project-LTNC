@@ -38,6 +38,8 @@ const int RENDER_DRAW_COLOR = 0xff;
 #define MAX_MAP_Y 10
 //Trong map01.dat là giá trị của ô chưa tiền
 #define STATE_MONEY 4
+#define STATE_DIAMOND 10
+#define STATE_LIFE 11
 
 //Trạng thái của nhân vật ->MainObject
 struct Input{
@@ -65,4 +67,6 @@ struct Map
 namespace SDLCommonFunc{
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2);
 }
+
+
 #endif  

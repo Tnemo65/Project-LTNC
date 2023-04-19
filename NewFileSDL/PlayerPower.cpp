@@ -29,16 +29,20 @@ void PlayerPower:: Show(SDL_Renderer* screen){
     }
 }
 
-void PlayerPower:: Decrease(){
+void PlayerPower:: LifeDecrease(){
     number_ --;
     pos_list_.pop_back();
 }
-void PlayerPower:: InitCrease(){
+
+void PlayerPower:: LifeIncrease(){
     number_ ++;
     int last_pos = pos_list_.back();
     last_pos += 40;
     pos_list_.push_back(last_pos);
 }
+
+
+
 
 PlayerMoney:: PlayerMoney(){
     x_pos_ = 0;

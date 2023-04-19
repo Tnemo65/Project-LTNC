@@ -4,6 +4,7 @@
 #include "CommonFunc.h"
 #include "BaseObject.h"
 
+//Mạng
 class PlayerPower : public BaseObject
 {
 public:
@@ -15,13 +16,13 @@ public:
     void Show (SDL_Renderer* screen);
     void Init(SDL_Renderer* screen);
 
-    void InitCrease();
-    void Decrease();
+    void LifeIncrease();
+    void LifeDecrease();
+        int number_;
+
 private:
-    int number_;
     vector<int> pos_list_; 
 };
-
 
 
 class PlayerMoney : public BaseObject

@@ -288,18 +288,17 @@ int main(int argc, char* argv[]){
                         exp_threat.Show(g_screen);
                         SDL_RenderPresent(g_screen); 
                         Mix_PlayChannel(-1, g_sound_exp[1], 0);
-
                     }
-
                     num_die++;
                     if(num_die <= 3){
-                        p_player.SetRect(0,0);
+                        p_player.SetRect(0, 0);
                         p_player.set_comeback_time(60);
                         SDL_Delay(1000);
-                        player_power.Decrease();
+                        player_power.LifeDecrease();
                         player_power.Render(g_screen);
                         continue;
                     }
+                    
                     else{
                         int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
                         char* message = new char[size];
@@ -367,6 +366,10 @@ int main(int argc, char* argv[]){
                 }   
             }
         }
+
+
+
+        
 
 
         //Show Game Time

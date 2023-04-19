@@ -368,6 +368,18 @@ void MainObject:: CheckToMap(Map &map_data){
                 map_data.tile[y2][x2] = 0;
                 IncreaseMoney();
             }
+            else if (val1 == STATE_DIAMOND || val2 == STATE_DIAMOND){
+                map_data.tile[y1][x2] = 0;
+                map_data.tile[y2][x2] = 0;
+                for(int i = 0; i < 25; i++){
+                    IncreaseMoney();
+                }
+            }
+            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+            //     map_data.tile[y1][x2] = 0;
+            //     map_data.tile[y2][x2] = 0;
+            //     LifeIncrease ();
+            // }
             //Nếu không phải ô tiền thì nếu ô không phải rỗng thì bị chặn
             else{
                 //Kiểm tra xem ô bên phải có phải là ô trống hay không
@@ -390,6 +402,18 @@ void MainObject:: CheckToMap(Map &map_data){
                 map_data.tile[y2][x1] = 0;
                 IncreaseMoney();
             }
+            else if (val1 == STATE_DIAMOND || val2 == STATE_DIAMOND){
+                map_data.tile[y1][x1] = 0;
+                map_data.tile[y2][x1] = 0;
+                for(int i = 0; i < 25; i++){
+                    IncreaseMoney();
+                }
+            }
+            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+            //     map_data.tile[y1][x1] = 0;
+            //     map_data.tile[y2][x1] = 0;
+            //     LifeIncrease ();
+            // }
             else{
                 if(val1 != BLANK_TILE || val2 != BLANK_TILE){
                     //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
@@ -417,8 +441,19 @@ void MainObject:: CheckToMap(Map &map_data){
                 map_data.tile[y2][x1] = 0;
                 map_data.tile[y2][x2] = 0;
                 IncreaseMoney();
-
             }
+            else if (val1 == STATE_DIAMOND || val2 == STATE_DIAMOND){
+                map_data.tile[y2][x1] = 0;
+                map_data.tile[y2][x2] = 0;
+                for(int i = 0; i < 25; i++){
+                    IncreaseMoney();
+                }
+            }
+            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+            //     map_data.tile[y2][x1] = 0;
+            //     map_data.tile[y2][x2] = 0;
+            //     LifeIncrease ();
+            // }
             else{
                 if(val1 != BLANK_TILE || val2  != BLANK_TILE){
                     y_pos_ = y2 * TILE_SIZE;
@@ -439,6 +474,18 @@ void MainObject:: CheckToMap(Map &map_data){
                 map_data.tile[y1][x2] = 0;
                 IncreaseMoney();
             }
+            else if (val1 == STATE_DIAMOND || val2 == STATE_DIAMOND){
+                map_data.tile[y1][x1] = 0;
+                map_data.tile[y1][x2] = 0;
+                for(int i = 0; i < 25; i++){
+                IncreaseMoney();
+                }
+            }
+            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+            //     map_data.tile[y1][x1] = 0;
+            //     map_data.tile[y1][x2] = 0;
+            //     LifeIncrease ();
+            // }
             else{
                 if(val1 != BLANK_TILE ||val2 != BLANK_TILE){
                      y_pos_ = (y1 + 1)*TILE_SIZE;
@@ -468,6 +515,7 @@ void MainObject::IncreaseMoney(){
     Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthaptien.wav"), 0);
 
 }
+
 
 void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
     //Nếu dưới đất lấy ảnh dưới đất
