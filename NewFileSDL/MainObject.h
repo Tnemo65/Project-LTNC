@@ -81,7 +81,7 @@ class MainObject : public BaseObject
         //Vị trí của map để làm map di chuyển 
         int map_x_;
         int map_y_;
-        
+        bool double_jump_;
         int come_back_time_;
 };
 

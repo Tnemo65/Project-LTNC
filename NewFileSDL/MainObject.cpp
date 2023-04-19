@@ -18,6 +18,8 @@ MainObject::MainObject()
     input_type_.left_ = 0;
     input_type_.right_ = 0;
     input_type_.jump_ = 0;
+    double_jump_ = true;
+
     input_type_.down_ =0;
     input_type_.up_ = 0; 
     //Kiểm tra có va chạm không
@@ -268,16 +270,17 @@ void MainObject::DoPlayer(Map &map_data){
         else if(input_type_.right_ == 1){
             x_val_ += PLAYER_SPEED;
         }
-        if(input_type_.jump_ == 1){
-            
-            //CHỈ KHI Ở DƯỚI ĐẤT MỚI NHẢY ĐƯỢC
-            if(on_ground_ == true){
-                y_val_ = - PLAYER_JUMP_VAL;
-            }
-            //Nhảy là không chạm đất nữa
+        if (input_type_.jump_ == 1 && on_ground_ == true) {
+            y_val_ = -PLAYER_JUMP_VAL;
             on_ground_ = false;
-            //Nhảy xong phải đưa về không
             input_type_.jump_ = 0;
+        } else if (input_type_.jump_ == 1 && on_ground_ == false && double_jump_ == true) {
+            y_val_ = -PLAYER_JUMP_VAL;
+            double_jump_ = false;
+            input_type_.jump_ = 0;
+        }
+        if (on_ground_ == true) {
+            double_jump_ = true;
         }
         //Để đứng trên đất mà không rơi qua đất 
         CheckToMap(map_data);
