@@ -9,7 +9,7 @@
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
 #define PLAYER_SPEED 8
-#define PLAYER_JUMP_VAL 25
+#define PLAYER_JUMP_VAL 15
 using namespace std;
 class MainObject : public BaseObject
 {
@@ -28,7 +28,7 @@ class MainObject : public BaseObject
         //Hiện ảnh theo frame
         void Show(SDL_Renderer* screen);
         //Hàm xử lí khi bấm trái phải
-        void HandleInputAction(SDL_Event events, SDL_Renderer* screen);
+        void HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_Chunk*bullet_sound[2]);
         void set_clips();
         //Cần truyền vào bản đồ để biết giới hạn đầu cuối để không cho đi qua
         void DoPlayer(Map& map_data);

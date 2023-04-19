@@ -138,7 +138,7 @@ void MainObject:: Show(SDL_Renderer* des){
 }
 
 //Kiểm tra phím nào được ấn và đánh dấu phím đó
-void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
+void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_Chunk*bullet_sound[2]){
     if(events.type == SDL_KEYDOWN) {
         switch(events.key.keysym.sym){
         case SDLK_RIGHT:
@@ -207,11 +207,14 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                         p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
                         //Lấy vị trí hình ảnh viên đạn theo nhân vật
                         p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
-                
+                    Mix_PlayChannel(-1, bullet_sound[0], 0);
+
                 }
                 else if(status_ == WALK_RIGHT){
                         p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
                         p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.1);            
+                        Mix_PlayChannel(-1, bullet_sound[0], 0);
+
                 }
                 //Set tốc độ bắn
                 p_bullet -> set_x_val(20);
@@ -220,6 +223,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen){
                 p_bullet -> set_is_move(true);
                 //Nạp đạn vào băng
                 p_bullet_list_.push_back(p_bullet);
+
         }
      }
 }

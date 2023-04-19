@@ -51,6 +51,23 @@ bool InitData()
         if(font_time == NULL){
             success = false;
         }
+
+
+
+        if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1){
+            success = false;
+        }
+        g_sound_bullet[0] = Mix_LoadWAV("assets/sound/game/dantron.wav");
+        //g_sound_bullet[1] = Mix_LoadWAV("assets/sound/game/danlase.wav");
+        g_sound_exp[0] = Mix_LoadWAV("assets/sound/game/noquai.wav");
+        g_sound_exp[1] = Mix_LoadWAV("assets/sound/game/nonhanvat.wav");
+        if(g_sound_exp[0] == NULL || g_sound_bullet[0] == NULL || g_sound_exp[1] == NULL){
+            success = false;
+        }
+
+
+
+
     }
     return success;
 }
@@ -195,7 +212,7 @@ int main(int argc, char* argv[]){
                 is_quit = true;
             }
             //Để lấy trạng thái các nút mình bấm trái phải
-            p_player.HandleInputAction(g_event, g_screen);
+            p_player.HandleInputAction(g_event, g_screen, g_sound_bullet);
         }
 
         SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
@@ -215,7 +232,7 @@ int main(int argc, char* argv[]){
         //Draw Geometric  Vẽ Khung
         GeometricFormat rectangle_size(0, 0, SCREEN_WIDTH, 40);
         //MÀU KHUNG
-        ColorData color_data(252, 79, 75);
+        ColorData color_data(255, 135, 19);
         Geometric::RenderRectangle(rectangle_size, color_data, g_screen);
         
         GeometricFormat outLineSize(1, 1, SCREEN_WIDTH - 1, 38);
@@ -239,7 +256,6 @@ int main(int argc, char* argv[]){
                 //Đạn của quái với nhân vật
                 SDL_Rect rect_player = p_player.GetRectFrame();
                 bool bCol1 = false;
-                //t = threat
                 vector <BulletObject*> tBullet_list = p_threat -> get_bullet_list();
                 for(int jj = 0; jj < (int)tBullet_list.size(); ++jj){
                      //Lấy ra 1 phần tử
@@ -252,7 +268,7 @@ int main(int argc, char* argv[]){
                         }                        
                     } 
                 } 
-                // //Người chạm quái
+                //Người chạm quái
                 SDL_Rect rect_threat = p_threat -> GetRectFrame();
                 bool bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
                 if(bCol1 || bCol2){
@@ -270,7 +286,9 @@ int main(int argc, char* argv[]){
                         exp_threat.set_frame(ex);
                         exp_threat.SetRect(x_pos, y_pos);
                         exp_threat.Show(g_screen);
-                        SDL_RenderPresent(g_screen);
+                        SDL_RenderPresent(g_screen); 
+                        Mix_PlayChannel(-1, g_sound_exp[1], 0);
+
                     }
 
                     num_die++;
@@ -342,6 +360,7 @@ int main(int argc, char* argv[]){
                             obj_threat -> Free();
                             //Trung đạn thì quái chết
                             threats_list.erase(threats_list.begin() + t);
+                            Mix_PlayChannel(-1, g_sound_exp[0], 0);
                         }  
                     }
                 }   

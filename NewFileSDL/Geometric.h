@@ -3,7 +3,7 @@
 
 #include "CommonFunc.h"
 
-typedef struct GeometricFormat{
+ struct GeometricFormat{
 public:
     GeometricFormat(int left, int top, int width, int height)
     {left_ = left, top_ = top, width_ = width, height_ = height;};
@@ -13,7 +13,7 @@ public:
     int height_;
 };
 
-typedef struct ColorData{
+ struct ColorData{
     ColorData(Uint8 r, Uint8 g, Uint8 b)
     {red_ = r; green_ = g; blue_ = b;}
 public:

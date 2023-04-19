@@ -10,6 +10,10 @@
 #include "src/include/SDL2/SDL_mixer.h"
 #include "src/include/SDL2/SDL_ttf.h"
 
+static Mix_Chunk* g_sound_bullet[2];
+static Mix_Chunk* g_sound_exp[2];
+
+
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
