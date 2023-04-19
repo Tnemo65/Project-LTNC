@@ -277,6 +277,7 @@ void ThreatsObject:: InitBullet(BulletObject* p_bullet, SDL_Renderer* screen){
             //Tốc độ đạn
             p_bullet -> set_x_val(10);
             bullet_list_.push_back(p_bullet);
+
         }
     }
 }
@@ -287,13 +288,11 @@ void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const
         if(p_bullet != NULL){
             //Nếu được di chuyển
             if(p_bullet-> get_is_move() ){
-
                 int bullet_distance = rect_.x + width_frame_ - p_bullet->GetRect().x;
 
                 if(bullet_distance < 300 && bullet_distance > 0){
                     p_bullet -> HandleMove(x_limit, y_limit);
                     p_bullet -> Render (screen);
-
                 }
                 else{
                     p_bullet ->set_is_move(false);
@@ -304,6 +303,7 @@ void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const
             else{
                 p_bullet -> set_is_move(true);
                 p_bullet -> SetRect(rect_.x + 5, rect_.y +15);
+                
             }
         }
     }

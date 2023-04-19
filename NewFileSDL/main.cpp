@@ -61,11 +61,11 @@ bool InitData()
         //g_sound_bullet[1] = Mix_LoadWAV("assets/sound/game/danlase.wav");
         g_sound_exp[0] = Mix_LoadWAV("assets/sound/game/noquai.wav");
         g_sound_exp[1] = Mix_LoadWAV("assets/sound/game/nonhanvat.wav");
-        if(g_sound_exp[0] == NULL || g_sound_bullet[0] == NULL || g_sound_exp[1] == NULL){
+        g_sound_antien = Mix_LoadWAV("assets/sound/game/thuthaptien.wav");
+        g_sound_danquai = Mix_LoadWAV("assets/sound/game/danlaser.wav");
+        if(g_sound_exp[0] == NULL || g_sound_bullet[0] == NULL || g_sound_exp[1] == NULL||g_sound_antien == NULL || g_sound_danquai == NULL){
             success = false;
         }
-
-
 
 
     }
@@ -339,6 +339,7 @@ int main(int argc, char* argv[]){
                         tRect.h = obj_threat -> get_height_frame();
                         //Viên đạn không có frame nên k cần lấy hết
                         SDL_Rect bRect = p_bullet ->GetRect();
+                        
                         bool bCol = SDLCommonFunc:: CheckCollision(bRect, tRect);
                         if(bCol == true){
                             mark_value++;
@@ -408,7 +409,6 @@ int main(int argc, char* argv[]){
         money_game.SetText(money_str);
         money_game.LoadFromRenderText(font_time,g_screen);
         money_game.RenderText(g_screen, SCREEN_WIDTH*0.5 - 250, 15);
-
 
         SDL_RenderPresent(g_screen);
         //Thời gian thực sự trôi qua

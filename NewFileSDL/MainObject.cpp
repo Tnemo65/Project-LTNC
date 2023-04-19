@@ -209,7 +209,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                         p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
                         //Lấy vị trí hình ảnh viên đạn theo nhân vật
                         p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
-                    Mix_PlayChannel(-1, bullet_sound[0], 0);
+                        Mix_PlayChannel(-1, bullet_sound[0], 0);
 
                 }
                 else if(status_ == WALK_RIGHT){
@@ -417,6 +417,7 @@ void MainObject:: CheckToMap(Map &map_data){
                 map_data.tile[y2][x1] = 0;
                 map_data.tile[y2][x2] = 0;
                 IncreaseMoney();
+
             }
             else{
                 if(val1 != BLANK_TILE || val2  != BLANK_TILE){
@@ -464,6 +465,8 @@ void MainObject:: CheckToMap(Map &map_data){
 
 void MainObject::IncreaseMoney(){
     money_count ++;
+    Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthaptien.wav"), 0);
+
 }
 
 void MainObject:: UpdateImagePlayer(SDL_Renderer * des){

@@ -36,7 +36,6 @@ class BulletObject: public BaseObject
         //Để xác định biên x y, nếu vượt quá màn hình thì xóa nó đi
         void HandleMove(const int& x_border, const int& y_border);
         bool LoadImgBullet(SDL_Renderer* des);
-        
     private:
         int x_val_;
         int y_val_;

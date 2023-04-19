@@ -12,7 +12,8 @@
 
 static Mix_Chunk* g_sound_bullet[2];
 static Mix_Chunk* g_sound_exp[2];
-
+static Mix_Chunk* g_sound_antien;
+static Mix_Chunk* g_sound_danquai;
 
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
