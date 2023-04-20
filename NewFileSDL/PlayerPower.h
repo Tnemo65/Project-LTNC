@@ -18,7 +18,7 @@ public:
 
     void LifeIncrease();
     void LifeDecrease();
-        int number_;
+    int number_;
 
 private:
     vector<int> pos_list_; 

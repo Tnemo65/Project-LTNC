@@ -298,7 +298,7 @@ void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const
                     p_bullet ->set_is_move(false);
                     
                 }
-            }
+            }  
             //Nếu đi quá màn
             else{
                 p_bullet -> set_is_move(true);

@@ -4,20 +4,14 @@
 #include<windows.h>
 #include<string>
 #include <vector>
-
+#include<iostream>
 #include "src/include/SDL2/SDL.h"
 #include "src/include/SDL2/SDL_image.h"
 #include "src/include/SDL2/SDL_mixer.h"
 #include "src/include/SDL2/SDL_ttf.h"
 
-static Mix_Chunk* g_sound_bullet[2];
-static Mix_Chunk* g_sound_exp[2];
-static Mix_Chunk* g_sound_antien;
-static Mix_Chunk* g_sound_danquai;
 
-static SDL_Window* g_window = NULL;
-static SDL_Renderer* g_screen = NULL;
-static SDL_Event g_event;
+
 
 //Screen
 const int FRAME_PER_SECOND = 40; //FPS 
@@ -67,6 +61,4 @@ struct Map
 namespace SDLCommonFunc{
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2);
 }
-
-
 #endif  

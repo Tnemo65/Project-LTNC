@@ -1,7 +1,7 @@
 #include "PlayerPower.h"
 
 PlayerPower::PlayerPower(){
-    number_ = 0;
+    number_ = 3;
 }
 
 PlayerPower::~PlayerPower(){
@@ -13,7 +13,7 @@ void PlayerPower:: AddPos(const int& xp){
 
 void PlayerPower:: Init(SDL_Renderer* screen){
     LoadImg("assets/img/map/player_pw.png", screen);
-    number_ = 3;
+    //number_ = 3;
     if(pos_list_.size() > 0){
         pos_list_.clear();
     }
@@ -54,7 +54,7 @@ PlayerMoney:: ~PlayerMoney(){
 }
 
 void PlayerMoney:: Init(SDL_Renderer* screen){
-    bool ret = LoadImg("assets/img/map/money_img.png", screen);
+    LoadImg("assets/img/map/money_img.png", screen);
 }
 
 void PlayerMoney :: Show (SDL_Renderer* screen){

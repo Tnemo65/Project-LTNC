@@ -22,6 +22,7 @@ class BulletObject: public BaseObject
         void set_y_val(const int& yVal) {y_val_ = yVal;}
         int get_x_val() const {return x_val_;}
         int get_y_val() const {return y_val_;}
+
         void set_is_move(const bool& isMove) {is_move_ = isMove;}
         bool get_is_move() const {return is_move_;}
 

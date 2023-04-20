@@ -52,9 +52,13 @@ class MainObject : public BaseObject
         int get_frame_width() const {return width_frame_;}
         int get_frame_height() const {return height_frame_;}
         void set_comeback_time(const int& cb_time) {come_back_time_ = cb_time;}
+        int get_comeback_time() {return come_back_time_;}
         int GetMoneyCount() const {return money_count;}
-        
-
+        int lifeNumber = 0;
+        bool IsLifeIncrease(){ return IsIncreaseLife;}
+        void SetLifeIncrease(bool status){ IsIncreaseLife = status;}
+        bool IsLifeDecrease(){ return IsDecreaseLife;}
+        void SetLifeDecrease(bool status){ IsDecreaseLife = status;}
     
     private:
         //Vector chứa những viên đạn
@@ -87,6 +91,9 @@ class MainObject : public BaseObject
         int map_y_;
         bool double_jump_;
         int come_back_time_;
+        bool IsIncreaseLife;
+        bool IsDecreaseLife;
+
 };
 
 #endif

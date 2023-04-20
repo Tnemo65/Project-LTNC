@@ -11,6 +11,17 @@
 #include "Geometric.h"
 BaseObject g_background;
 TTF_Font* font_time = NULL;
+
+
+static SDL_Window* g_window = NULL;
+static SDL_Renderer* g_screen = NULL;
+static SDL_Event g_event;
+
+static Mix_Chunk* g_sound_bullet[2];
+static Mix_Chunk* g_sound_exp[2];
+static Mix_Chunk* g_sound_antien;
+static Mix_Chunk* g_sound_danquai;
+
 using namespace std;
 bool InitData()
 {
@@ -165,7 +176,9 @@ int main(int argc, char* argv[]){
     //Các hình ảnh tĩnh in lên chỉ số
     //Mạng
     PlayerPower player_power;
+    //IN LÊN HÌNH ẢNH MẠNG
     player_power.Init(g_screen);
+    //p_player.lifeNumber = player_power.number_;
     //Tiền
     PlayerMoney player_money;
     player_money.Init(g_screen);
@@ -190,7 +203,7 @@ int main(int argc, char* argv[]){
     exp_main.set_clip();
     
     //SỐ MẠNG
-    int num_die = 0;
+    //int num_die = 0;
 
     //Time text
     TextObject time_game;
@@ -289,16 +302,27 @@ int main(int argc, char* argv[]){
                         SDL_RenderPresent(g_screen); 
                         Mix_PlayChannel(-1, g_sound_exp[1], 0);
                     }
-                    num_die++;
-                    if(num_die <= 3){
+
+
+
+
+                    if(player_power.number_ > 1){
                         p_player.SetRect(0, 0);
                         p_player.set_comeback_time(60);
                         SDL_Delay(1000);
                         player_power.LifeDecrease();
-                        player_power.Render(g_screen);
+                        // p_player.lifeNumber--;
+                        //player_power.number_ = p_player.lifeNumber;
+                        //std::cout << player_power.number_ << std::endl;
+                        //player_power.Render(g_screen);
                         continue;
                     }
                     
+
+
+
+
+
                     else{
                         int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
                         char* message = new char[size];
@@ -413,6 +437,19 @@ int main(int argc, char* argv[]){
         money_game.LoadFromRenderText(font_time,g_screen);
         money_game.RenderText(g_screen, SCREEN_WIDTH*0.5 - 250, 15);
 
+        if (p_player.IsLifeIncrease()) {
+            player_power.LifeIncrease();
+            p_player.SetLifeIncrease(false);
+        }
+
+        if ( p_player.IsLifeDecrease()) {
+            // Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
+            player_power.LifeDecrease();
+            p_player.SetLifeDecrease(false);
+        }
+
+        player_power.Render(g_screen);
+         //cout << player_power.number_ << endl;
         SDL_RenderPresent(g_screen);
         //Thời gian thực sự trôi qua
         int real_imp_time = fps_timer.get_ticks();

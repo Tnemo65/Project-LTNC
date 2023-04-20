@@ -31,6 +31,9 @@ MainObject::MainObject()
     come_back_time_ = 0;
     //Đếm tiền
     money_count = 0;
+    IsIncreaseLife = false;
+    IsDecreaseLife = false;
+
 }
 
 MainObject::~MainObject()
@@ -375,11 +378,13 @@ void MainObject:: CheckToMap(Map &map_data){
                     IncreaseMoney();
                 }
             }
-            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
-            //     map_data.tile[y1][x2] = 0;
-            //     map_data.tile[y2][x2] = 0;
-            //     LifeIncrease ();
-            // }
+            else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+                map_data.tile[y1][x2] = 0;
+                map_data.tile[y2][x2] = 0;
+                IsIncreaseLife = true;
+                Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
+
+            }
             //Nếu không phải ô tiền thì nếu ô không phải rỗng thì bị chặn
             else{
                 //Kiểm tra xem ô bên phải có phải là ô trống hay không
@@ -409,11 +414,13 @@ void MainObject:: CheckToMap(Map &map_data){
                     IncreaseMoney();
                 }
             }
-            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
-            //     map_data.tile[y1][x1] = 0;
-            //     map_data.tile[y2][x1] = 0;
-            //     LifeIncrease ();
-            // }
+            else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+                map_data.tile[y1][x1] = 0;
+                map_data.tile[y2][x1] = 0;
+                IsIncreaseLife = true;
+                Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
+
+            }
             else{
                 if(val1 != BLANK_TILE || val2 != BLANK_TILE){
                     //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
@@ -449,11 +456,14 @@ void MainObject:: CheckToMap(Map &map_data){
                     IncreaseMoney();
                 }
             }
-            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
-            //     map_data.tile[y2][x1] = 0;
-            //     map_data.tile[y2][x2] = 0;
-            //     LifeIncrease ();
-            // }
+            else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+                map_data.tile[y2][x1] = 0;
+                map_data.tile[y2][x2] = 0;
+                IsIncreaseLife = true;
+                Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
+
+
+            }
             else{
                 if(val1 != BLANK_TILE || val2  != BLANK_TILE){
                     y_pos_ = y2 * TILE_SIZE;
@@ -481,11 +491,13 @@ void MainObject:: CheckToMap(Map &map_data){
                 IncreaseMoney();
                 }
             }
-            // else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
-            //     map_data.tile[y1][x1] = 0;
-            //     map_data.tile[y1][x2] = 0;
-            //     LifeIncrease ();
-            // }
+            else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
+                map_data.tile[y1][x1] = 0;
+                map_data.tile[y1][x2] = 0;
+                IsIncreaseLife = true;
+                Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
+
+            }
             else{
                 if(val1 != BLANK_TILE ||val2 != BLANK_TILE){
                      y_pos_ = (y1 + 1)*TILE_SIZE;
@@ -505,7 +517,8 @@ void MainObject:: CheckToMap(Map &map_data){
         x_pos_ = map_data.max_x_ - width_frame_ - 1;
     }
 
-    if(y_pos_ > map_data.max_y_){
+    if(y_pos_ >= map_data.max_y_){
+        IsDecreaseLife = true;
         come_back_time_ = 60;
     }
 }
@@ -513,8 +526,8 @@ void MainObject:: CheckToMap(Map &map_data){
 void MainObject::IncreaseMoney(){
     money_count ++;
     Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthaptien.wav"), 0);
-
 }
+
 
 
 void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
