@@ -31,9 +31,14 @@ const int RENDER_DRAW_COLOR = 0xff;
 #define MAX_MAP_X 400
 #define MAX_MAP_Y 10
 //Trong map01.dat là giá trị của ô chưa tiền
-#define STATE_MONEY 4
-#define STATE_DIAMOND 10
-#define STATE_LIFE 11
+#define STATE_MONEY 24
+#define STATE_DIAMOND 25
+#define STATE_LIFE 26
+#define STATE_GAI1 19
+#define STATE_GAI2 20
+#define STATE_DECOR1 21
+#define STATE_DECOR2 22
+#define STATE_DECOR3 23
 
 //Trạng thái của nhân vật ->MainObject
 struct Input{
@@ -42,6 +47,8 @@ struct Input{
     int up_;
     int down_;
     int jump_;
+    int stand_right_;
+    int stand_left_;
 };
 
 //Vị trí của các 

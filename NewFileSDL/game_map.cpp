@@ -39,7 +39,7 @@ void GameMap :: LoadMap(char* name)
 }
 
 void GameMap:: LoadTiles (SDL_Renderer* screen){
-    char file_img[40];
+    char file_img[30];
     FILE* fp = NULL;
     for(int i = 0; i < MAX_TILES; i++){
         //Định dạng chuỗi kí tự "" lưu vào sprintf 
@@ -71,11 +71,11 @@ void GameMap::DrawMap(SDL_Renderer* screen){
     x1 =(game_map_.start_x_ %TILE_SIZE) * (-1);
     //x2 cuối map sẽ fill quá thêm một lượng = với lượng hổng của x1(nếu x1 !=0)
     //Nếu x1=0 thì + 0 còn nếu khác thì + Tile_size
-    x2 =x1 + SCREEN_WIDTH + (x1 == 0 ? 0 : TILE_SIZE);
+    x2 =x1 + SCREEN_WIDTH + (x1 ? TILE_SIZE : 0);
 
     map_y = game_map_.start_y_/TILE_SIZE;
     y1 = (game_map_.start_y_% TILE_SIZE) * (-1);
-    y2 = y1+ SCREEN_HEIGHT +(y1 == 0? 0: TILE_SIZE);
+    y2 = y1+ SCREEN_HEIGHT +(y1 ?  TILE_SIZE : 0);
 
     for(int i = y1; i < y2; i+= TILE_SIZE){
         map_x = game_map_.start_x_/ TILE_SIZE;

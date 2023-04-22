@@ -125,7 +125,7 @@ void ThreatsObject::InitThreats(){
     else{
         x_pos_ = 0;
     }
-    y_pos_ = 0;
+    y_pos_ = TILE_SIZE;
     come_back_time_ = 0;     
     input_type_.left_ = 1;   
 }
@@ -165,8 +165,9 @@ void ThreatsObject::InitThreats(){
             //Nếu ăn phải tiền thì ô tiền biến mất
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
+            // (val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18) 
             //Kiểm tra xem ô bên phải có phải là ô trống hay không
-            if( (val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2  != BLANK_TILE && val2 != STATE_MONEY)){
+            if( ((val1 >= 1 && val1 <= 18) && val1 != STATE_MONEY) || ((val2 >= 1 && val2 <=18) && val2 != STATE_MONEY)){
                 x_pos_ = x2 * TILE_SIZE; // Ra vị trí biên của frame nhân vật
                 //Nếu mà chạm tường thì x_pos_ chỉ dừng ở đó
                 //x_val_ = 0
@@ -179,7 +180,7 @@ void ThreatsObject::InitThreats(){
             int val1 = map_data.tile[y1][x1];
             int val2 = map_data.tile[y2][x1];
             //Nếu ăn phải tiền thì ô tiền biến mất
-            if((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2  != BLANK_TILE && val2 != STATE_MONEY)){
+            if( ((val1 >= 1 && val1 <= 18) && val1 != STATE_MONEY) || ((val2 >= 1 && val2 <=18) && val2 != STATE_MONEY)){
                 //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
                 x_pos_ = (x1 + 1)*TILE_SIZE;
                 x_val_ = 0;
@@ -200,7 +201,7 @@ void ThreatsObject::InitThreats(){
         if(y_val_ > 0){
             int val1 = map_data.tile[y2][x1];
             int val2 = map_data.tile[y2][x2];
-            if( (val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2  != BLANK_TILE && val2 != STATE_MONEY)){
+            if( ((val1 >= 1 && val1 <= 18) && val1 != STATE_MONEY) || ((val2 >= 1 && val2 <=18) && val2 != STATE_MONEY)){
                 y_pos_ = y2 * TILE_SIZE;
                 y_pos_ -= (height_frame_ +1);
                 y_val_ = 0;
@@ -210,7 +211,7 @@ void ThreatsObject::InitThreats(){
          else if( y_val_ < 0){
             int val1 = map_data.tile[y1][x1];
             int val2 = map_data.tile[y1][x2];
-            if((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2  != BLANK_TILE && val2 != STATE_MONEY)){
+            if( ((val1 >= 1 && val1 <= 18) && val1 != STATE_MONEY) || ((val2 >= 1 && val2 <=18) && val2 != STATE_MONEY)){
                 y_pos_ = (y1 + 1)*TILE_SIZE;
                 y_val_ = 0;
             }
@@ -298,7 +299,8 @@ void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const
                     p_bullet ->set_is_move(false);
                     
                 }
-            }  
+            }
+        
             //Nếu đi quá màn
             else{
                 p_bullet -> set_is_move(true);

@@ -9,7 +9,7 @@
 #include "PlayerPower.h"
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
-#define PLAYER_SPEED 8
+#define PLAYER_SPEED 25
 #define PLAYER_JUMP_VAL 15
 using namespace std;
 class MainObject : public BaseObject
@@ -23,6 +23,8 @@ class MainObject : public BaseObject
             WALK_NONE = 0,
             WALK_RIGHT = 1,
             WALK_LEFT = 2,
+            STAND_RIGHT = 3,
+            STAND_LEFT = 4,
         };
 
         bool LoadImg (string path, SDL_Renderer* screen);
@@ -59,7 +61,9 @@ class MainObject : public BaseObject
         void SetLifeIncrease(bool status){ IsIncreaseLife = status;}
         bool IsLifeDecrease(){ return IsDecreaseLife;}
         void SetLifeDecrease(bool status){ IsDecreaseLife = status;}
-    
+
+        // bool IsWin(){return win;}
+        // void SetWin(bool status){ win = status;}
     private:
         //Vector chứa những viên đạn
         vector<BulletObject*> p_bullet_list_;
@@ -93,7 +97,7 @@ class MainObject : public BaseObject
         int come_back_time_;
         bool IsIncreaseLife;
         bool IsDecreaseLife;
-
+        bool win;
 };
 
 #endif

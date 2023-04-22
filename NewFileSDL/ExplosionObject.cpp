@@ -78,6 +78,3 @@ void ExplosionObject::Show(SDL_Renderer* screen){
     }
     SDL_RenderCopy(screen, p_object_, current_clip, &render_quad);
 }
-
-
-//LoadImg -> Cắt từng frame -> Show ra

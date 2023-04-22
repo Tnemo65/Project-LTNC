@@ -69,12 +69,13 @@ bool InitData()
             success = false;
         }
         g_sound_bullet[0] = Mix_LoadWAV("assets/sound/game/dantron.wav");
+        g_sound_bullet[1] = Mix_LoadWAV("assets/sound/game/danlaser.wav");
         //g_sound_bullet[1] = Mix_LoadWAV("assets/sound/game/danlase.wav");
         g_sound_exp[0] = Mix_LoadWAV("assets/sound/game/noquai.wav");
         g_sound_exp[1] = Mix_LoadWAV("assets/sound/game/nonhanvat.wav");
         g_sound_antien = Mix_LoadWAV("assets/sound/game/thuthaptien.wav");
         g_sound_danquai = Mix_LoadWAV("assets/sound/game/danlaser.wav");
-        if(g_sound_exp[0] == NULL || g_sound_bullet[0] == NULL || g_sound_exp[1] == NULL||g_sound_antien == NULL || g_sound_danquai == NULL){
+        if(g_sound_exp[0] == NULL || g_sound_bullet[0] == NULL || g_sound_exp[1] == NULL||g_sound_antien == NULL || g_sound_danquai == NULL||g_sound_bullet[1] == NULL){
             success = false;
         }
 
@@ -105,19 +106,25 @@ vector<ThreatsObject*> MakeThreadList(){
     //Lưu cả quái tĩnh và quái động
     vector<ThreatsObject*> list_threats;
 
+    int x_dungim[15] = {11,22,34,45,56,66,105,146,178,215,231,299,354,368,392};
+    int y_dungim[15] = {8,7,5,4,9,4,5,8,3,6,5,3,5,5,7};
+    int x_dichuyen[25] = {5,15,24,46,60,80,88,89,123,155,159,164,174,198,238,245,255,270,281,293,301,334,351,383,384};
+    int y_dichuyen[25] = {8,5,5,9,9,5,3,8,9,6,9,4,6,5,4,7,7,7,7,9,3,5,5,7,7};
+    int phamvi[25] = {2,3,2,3,2,3,3,2,1,2,4,3,1,1,1,2,3,3,2,3,1,1,1,4,5};
+
     //QUÁI DI CHUYỂN ĐỘNG
-    ThreatsObject* dynamic_threats = new ThreatsObject[20];
-    for(int i = 0; i < 20; i++){
+    ThreatsObject* dynamic_threats = new ThreatsObject[25];
+    for(int i = 0; i < 25; i++){
         ThreatsObject* p_threat = (dynamic_threats + i);
         if(p_threat != NULL){
             p_threat -> LoadImg("assets/img/map/threat_left.png",g_screen);
             p_threat -> set_clips();
             p_threat -> set_type_move(ThreatsObject::MOVE_IN_SPACE_THREAT);
-            p_threat -> set_x_pos (500 + i * 500);
-            p_threat -> set_y_pos(200);
+            p_threat -> set_x_pos (x_dichuyen[i]*TILE_SIZE);
+            p_threat -> set_y_pos(y_dichuyen[i]*TILE_SIZE);
 
-            int pos1 = p_threat -> get_x_pos() - 60;
-            int pos2 = p_threat -> get_x_pos() + 60;
+            int pos1 = p_threat -> get_x_pos() - 30;
+            int pos2 = p_threat -> get_x_pos() + 30;
             p_threat -> SetAnimationPos(pos1, pos2);
             p_threat -> set_input_left(1);
             list_threats.push_back(p_threat);
@@ -128,15 +135,15 @@ vector<ThreatsObject*> MakeThreadList(){
 
     //SỐ LƯỢNG QUÁI
     //QUÁI ĐỨNG IM
-    ThreatsObject* threats_objs = new ThreatsObject[20];
-    for(int i = 0; i < 20; i++){
+    ThreatsObject* threats_objs = new ThreatsObject[15];
+    for(int i = 0; i < 15; i++){
         ThreatsObject* p_threat = (threats_objs +i);
         if(p_threat != NULL){
             p_threat -> LoadImg("assets/img/map/threat_level.png", g_screen);
             p_threat -> set_clips();
             //Đặt vị trí quái threat
-            p_threat -> set_x_pos(700 + i*1200 - 50);
-            p_threat -> set_y_pos(250);
+            p_threat -> set_x_pos(x_dungim[i]*TILE_SIZE );
+            p_threat -> set_y_pos(y_dungim[i]*TILE_SIZE);
             p_threat -> set_type_move(ThreatsObject:: STATIC_THREAT);
             //Để nó không di chuyển
             p_threat -> set_input_left(0);
@@ -163,7 +170,7 @@ int main(int argc, char* argv[]){
     GameMap game_map;
     //fill ảnh đất
     //Đọc map viết bởi số 0 1 2 
-    char file_path[] = "assets/img/map/map01.dat";
+    char file_path[] = "assets/img/map/map.txt";
     game_map.LoadMap(file_path);
     //Load các hình ảnh tương ứng vào ô 1 2 3
     game_map.LoadTiles(g_screen);
@@ -178,7 +185,7 @@ int main(int argc, char* argv[]){
     PlayerPower player_power;
     //IN LÊN HÌNH ẢNH MẠNG
     player_power.Init(g_screen);
-    //p_player.lifeNumber = player_power.number_;
+    p_player.lifeNumber = player_power.number_;
     //Tiền
     PlayerMoney player_money;
     player_money.Init(g_screen);
@@ -301,28 +308,16 @@ int main(int argc, char* argv[]){
                         exp_threat.Show(g_screen);
                         SDL_RenderPresent(g_screen); 
                         Mix_PlayChannel(-1, g_sound_exp[1], 0);
+                        SDL_Delay(100);
                     }
-
-
-
 
                     if(player_power.number_ > 1){
                         p_player.SetRect(0, 0);
                         p_player.set_comeback_time(60);
                         SDL_Delay(1000);
                         player_power.LifeDecrease();
-                        // p_player.lifeNumber--;
-                        //player_power.number_ = p_player.lifeNumber;
-                        //std::cout << player_power.number_ << std::endl;
-                        //player_power.Render(g_screen);
                         continue;
                     }
-                    
-
-
-
-
-
                     else{
                         int size = WideCharToMultiByte(CP_UTF8, 0, L"GAME OVER", -1, NULL, 0, NULL, NULL);
                         char* message = new char[size];
@@ -337,6 +332,7 @@ int main(int argc, char* argv[]){
                 }
             }
         }
+        
         //Lấy frame là 1 ô ảnh
         int frame_exp_width = exp_threat.get_frame_width();
         int frame_exp_height = exp_threat.get_frame_height();
@@ -392,10 +388,6 @@ int main(int argc, char* argv[]){
         }
 
 
-
-        
-
-
         //Show Game Time
         string str_time = "Time: ";
         Uint32 time_val = SDL_GetTicks() /1000;
@@ -443,9 +435,30 @@ int main(int argc, char* argv[]){
         }
 
         if ( p_player.IsLifeDecrease()) {
-            // Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
             player_power.LifeDecrease();
             p_player.SetLifeDecrease(false);
+
+
+
+            //Vụ nổ khi nhân vật chạm đạn laser or quái
+            int frame_exp_width = exp_main.get_frame_width();
+            int frame_exp_height = exp_main.get_frame_height();
+            for(int ex = 0; ex < NUM_FRAME_EXP; ex++){
+                //Vị trí đặt vụ nổ
+                //Vụ nổ xảy ra ở GIỮA Ô HÌNH
+                //-> vị trí = đầu của ô + độ dài nửa ô
+                int x_pos = (p_player.GetRect().x + p_player.get_frame_width() * 0.5 )- frame_exp_width * 0.5 -10;
+                int y_pos = (p_player.GetRect().y + p_player.get_frame_height() * 0.5)- frame_exp_height * 0.5 - 20;
+                
+                exp_threat.set_frame(ex);
+                exp_threat.SetRect(x_pos, y_pos);
+                exp_threat.Show(g_screen);
+                p_player.set_comeback_time(60);
+                SDL_RenderPresent(g_screen); 
+                Mix_PlayChannel(-1, g_sound_exp[1], 0);
+                SDL_Delay(100);
+
+            }
         }
 
         player_power.Render(g_screen);
@@ -467,8 +480,14 @@ int main(int argc, char* argv[]){
                 }
         }
 
-    }    
+        
+        // if(p_player.IsWin()){
+        // is_quit = true;
+        // }
 
+
+    }     
+       
     for(int i = 0; i < (int)threats_list.size(); i++){
         ThreatsObject* p_threat = threats_list.at(i);
         if(p_threat != NULL){
@@ -476,6 +495,7 @@ int main(int argc, char* argv[]){
             p_threat = NULL;
         }
     }
+
     threats_list.clear();
     close();
     return 0;

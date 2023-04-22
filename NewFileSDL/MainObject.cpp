@@ -5,7 +5,7 @@ MainObject::MainObject()
 
     frame_ = 0;
     //Tọa độ của nhân vật ...
-    x_pos_ = 0;
+    x_pos_ = TILE_SIZE;;
     y_pos_ = 0;
     //Giá trị tăng của x y khi di chuyển
     x_val_ = 0;
@@ -18,6 +18,8 @@ MainObject::MainObject()
     input_type_.left_ = 0;
     input_type_.right_ = 0;
     input_type_.jump_ = 0;
+    input_type_.stand_left_ =0;
+    input_type_.stand_right_ = 0;
     double_jump_ = true;
 
     input_type_.down_ =0;
@@ -114,6 +116,8 @@ void MainObject:: Show(SDL_Renderer* des){
     //Nếu liên tục bấm -> tăng frame
     if(input_type_.left_ == 1 ||
        input_type_.right_ == 1)
+    //    input_type_.stand_left_ == 1|| 
+    //    input_type_.stand_right_ == 1)
     {
         frame_ ++;
     }
@@ -151,6 +155,8 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_RIGHT;
                 input_type_.right_ = 1;
                 input_type_.left_ = 0;
+                // input_type_.stand_right_ = 0;
+                // input_type_.stand_left_ = 0;
                 //Nếu dưới đất thì load ảnh chân di chuyển
                 //Nếu trên không trung thì load ảnh chân đứng im 
                 UpdateImagePlayer(screen);
@@ -162,6 +168,8 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_LEFT;
                 input_type_.left_ = 1;
                 input_type_.right_ = 0;
+                // input_type_.stand_right_ = 0;
+                // input_type_.stand_left_ = 0;
                 UpdateImagePlayer(screen);
             }
             break;
@@ -181,56 +189,93 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
         switch(events.key.keysym.sym){
         case SDLK_RIGHT:
             {
+                //status_ = STAND_RIGHT;
                 input_type_.right_ = 0;
+                // input_type_.stand_right_ = 1;
+                // input_type_.stand_left_ = 0;
+                //UpdateImagePlayer(screen);
             }
             break;
         
         case SDLK_LEFT:
             {
+                //status_ = STAND_LEFT;
                 input_type_.left_ = 0;
+                // input_type_.stand_right_ = 0;
+                // input_type_.stand_left_ = 1;
+                //UpdateImagePlayer(screen);
+
             }
             break;
         case SDLK_UP:
         {
             input_type_.jump_ = 0;
+                // input_type_.stand_right_ = 0;
+                // input_type_.stand_left_ = 0;
         }
         break;
         }
     }
      if(events.type == SDL_MOUSEBUTTONDOWN){
-    //     if (events.button.button == SDL_BUTTON_RIGHT){
-    //         input_type_.jump_ = 1;
-    //     }
-            if(events.button.button == SDL_BUTTON_LEFT){
-                BulletObject* p_bullet = new BulletObject();
-                //THAY ĐỔI LOẠI ĐẠN
-                p_bullet -> set_bullet_type(BulletObject::SPHERE_BULLET);
-                p_bullet -> LoadImgBullet(screen);
-                //XÁC ĐỊNH ĐẦU RA CỦA ĐẠN
-                if(status_ == WALK_LEFT){
-                        //Set đang quay sang trái hay phải
-                        p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
-                        //Lấy vị trí hình ảnh viên đạn theo nhân vật
-                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
-                        Mix_PlayChannel(-1, bullet_sound[0], 0);
+        if (events.button.button == SDL_BUTTON_RIGHT){
+            BulletObject* p_bullet = new BulletObject();
+            //THAY ĐỔI LOẠI ĐẠN
+            p_bullet -> set_bullet_type(BulletObject::LASER_BULLET);
+            p_bullet -> LoadImgBullet(screen);
+            //XÁC ĐỊNH ĐẦU RA CỦA ĐẠN
+            if(status_ == WALK_LEFT){
+                    //Set đang quay sang trái hay phải
+                    p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
+                    //Lấy vị trí hình ảnh viên đạn theo nhân vật
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.3);            
+                    Mix_PlayChannel(-1, bullet_sound[1], 0);
 
-                }
-                else if(status_ == WALK_RIGHT){
-                        p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
-                        p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.1);            
-                        Mix_PlayChannel(-1, bullet_sound[0], 0);
+            }
+            else if(status_ == WALK_RIGHT){
+                    p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.3);            
+                    Mix_PlayChannel(-1, bullet_sound[1], 0);
 
-                }
-                //Set tốc độ bắn
-                p_bullet -> set_x_val(20);
-                p_bullet -> set_y_val(20);
-                //Trong map
-                p_bullet -> set_is_move(true);
-                //Nạp đạn vào băng
-                p_bullet_list_.push_back(p_bullet);
+            }
+            //Set tốc độ bắn
+            p_bullet -> set_x_val(20);
+            p_bullet -> set_y_val(20);
+            //Trong map
+            p_bullet -> set_is_move(true);
+            //Nạp đạn vào băng
+            p_bullet_list_.push_back(p_bullet);
 
         }
-     }
+        else if(events.button.button == SDL_BUTTON_LEFT){
+            BulletObject* p_bullet = new BulletObject();
+            //THAY ĐỔI LOẠI ĐẠN
+            p_bullet -> set_bullet_type(BulletObject::SPHERE_BULLET);
+            p_bullet -> LoadImgBullet(screen);
+            //XÁC ĐỊNH ĐẦU RA CỦA ĐẠN
+            if(status_ == WALK_LEFT){
+                    //Set đang quay sang trái hay phải
+                    p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
+                    //Lấy vị trí hình ảnh viên đạn theo nhân vật
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
+                    Mix_PlayChannel(-1, bullet_sound[0], 0);
+
+            }
+            else if(status_ == WALK_RIGHT){
+                    p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.1);            
+                    Mix_PlayChannel(-1, bullet_sound[0], 0);
+
+            }
+            //Set tốc độ bắn
+            p_bullet -> set_x_val(20);
+            p_bullet -> set_y_val(20);
+            //Trong map
+            p_bullet -> set_is_move(true);
+            //Nạp đạn vào băng
+            p_bullet_list_.push_back(p_bullet);
+
+        }
+    }
 }
 
 void MainObject::HandleBullet(SDL_Renderer* des){
@@ -302,7 +347,7 @@ void MainObject::DoPlayer(Map &map_data){
             }
             //Nếu mà hết thời gian chờ thì nvat rơi từ trên xuống
             //Ở trên cùng map
-            y_pos_ = 0;
+            y_pos_ =  TILE_SIZE;
             x_val_ = 0;
             y_val_ = 0;
         }
@@ -371,6 +416,9 @@ void MainObject:: CheckToMap(Map &map_data){
                 map_data.tile[y2][x2] = 0;
                 IncreaseMoney();
             }
+            else if(val1 == STATE_GAI1 || val2 == STATE_GAI1 || val2 == STATE_GAI2 || val1 == STATE_GAI2){
+                IsDecreaseLife  = true;
+            }
             else if (val1 == STATE_DIAMOND || val2 == STATE_DIAMOND){
                 map_data.tile[y1][x2] = 0;
                 map_data.tile[y2][x2] = 0;
@@ -385,10 +433,10 @@ void MainObject:: CheckToMap(Map &map_data){
                 Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
 
             }
-            //Nếu không phải ô tiền thì nếu ô không phải rỗng thì bị chặn
+            //Nếu không phải ô tiền và nếu ô không phải rỗng thì bị chặn
             else{
                 //Kiểm tra xem ô bên phải có phải là ô trống hay không
-                if(val1 != BLANK_TILE || val2 != BLANK_TILE){
+                if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18)){
                     x_pos_ = x2 * TILE_SIZE; // Ra vị trí biên của frame nhân vật
                     //Nếu mà chạm tường thì x_pos_ chỉ dừng ở đó
                     //x_val_ = 0
@@ -414,6 +462,9 @@ void MainObject:: CheckToMap(Map &map_data){
                     IncreaseMoney();
                 }
             }
+            else if(val1 == STATE_GAI1 || val2 == STATE_GAI1 || val2 == STATE_GAI2 || val1 == STATE_GAI2){
+                IsDecreaseLife  = true;
+            }
             else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
                 map_data.tile[y1][x1] = 0;
                 map_data.tile[y2][x1] = 0;
@@ -422,7 +473,7 @@ void MainObject:: CheckToMap(Map &map_data){
 
             }
             else{
-                if(val1 != BLANK_TILE || val2 != BLANK_TILE){
+                if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18)){
                     //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
                     x_pos_ = (x1 + 1)*TILE_SIZE;
                     x_val_ = 0;
@@ -456,6 +507,9 @@ void MainObject:: CheckToMap(Map &map_data){
                     IncreaseMoney();
                 }
             }
+            else if(val1 == STATE_GAI1 || val2 == STATE_GAI1 || val2 == STATE_GAI2 || val1 == STATE_GAI2){
+                IsDecreaseLife  = true;
+            }
             else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
                 map_data.tile[y2][x1] = 0;
                 map_data.tile[y2][x2] = 0;
@@ -465,7 +519,7 @@ void MainObject:: CheckToMap(Map &map_data){
 
             }
             else{
-                if(val1 != BLANK_TILE || val2  != BLANK_TILE){
+                if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18)){
                     y_pos_ = y2 * TILE_SIZE;
                     y_pos_ -= (height_frame_ +1);
                     y_val_ = 0;
@@ -491,6 +545,9 @@ void MainObject:: CheckToMap(Map &map_data){
                 IncreaseMoney();
                 }
             }
+            else if(val1 == STATE_GAI1 || val2 == STATE_GAI1 || val2 == STATE_GAI2 || val1 == STATE_GAI2){
+                IsDecreaseLife  = true;
+            }
             else if(val1 == STATE_LIFE || val2 == STATE_LIFE){
                 map_data.tile[y1][x1] = 0;
                 map_data.tile[y1][x2] = 0;
@@ -499,7 +556,7 @@ void MainObject:: CheckToMap(Map &map_data){
 
             }
             else{
-                if(val1 != BLANK_TILE ||val2 != BLANK_TILE){
+                if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18) ){
                      y_pos_ = (y1 + 1)*TILE_SIZE;
                     y_val_ = 0;
                 }
@@ -517,7 +574,7 @@ void MainObject:: CheckToMap(Map &map_data){
         x_pos_ = map_data.max_x_ - width_frame_ - 1;
     }
 
-    if(y_pos_ >= map_data.max_y_){
+    if(y_pos_ >= map_data.max_y_ - TILE_SIZE/2){
         IsDecreaseLife = true;
         come_back_time_ = 60;
     }
@@ -540,11 +597,29 @@ void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
         else if(status_ == WALK_RIGHT){
             LoadImg("assets/img/map/player_right.png", des);
         }
+
+
+
+
+
+
+        // else if (status_ == STAND_RIGHT){
+        //     LoadImg("assets/img/map/player_stand_right.png", des);
+        // }
+
+        // else if (status_ == STAND_LEFT){
+        //     LoadImg("assets/img/map/player_stand_right.png", des);
+        // }
+
+
+
+
+
     }
     //Nếu trên không trung lấy ảnh trên không trung
     else{
         //Mà ở đầu map thì load ảnh nhảy bên phải
-        if(x_pos_ == 0){
+        if(x_pos_ == TILE_SIZE){
             LoadImg("assets/img/map/jum_right.png", des);
         }
         //Nếu là trái phải thì lấy ảnh trái phải
