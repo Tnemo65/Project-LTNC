@@ -18,8 +18,6 @@ MainObject::MainObject()
     input_type_.left_ = 0;
     input_type_.right_ = 0;
     input_type_.jump_ = 0;
-    input_type_.stand_left_ =0;
-    input_type_.stand_right_ = 0;
     double_jump_ = true;
 
     input_type_.down_ =0;

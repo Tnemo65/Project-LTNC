@@ -106,11 +106,10 @@ vector<ThreatsObject*> MakeThreadList(){
     //Lưu cả quái tĩnh và quái động
     vector<ThreatsObject*> list_threats;
 
-    int x_dungim[15] = {11,22,34,45,56,66,105,146,178,215,231,299,354,368,392};
-    int y_dungim[15] = {8,7,5,4,9,4,5,8,3,6,5,3,5,5,7};
-    int x_dichuyen[25] = {5,15,24,46,60,80,88,89,123,155,159,164,174,198,238,245,255,270,281,293,301,334,351,383,384};
-    int y_dichuyen[25] = {8,5,5,9,9,5,3,8,9,6,9,4,6,5,4,7,7,7,7,9,3,5,5,7,7};
-    int phamvi[25] = {2,3,2,3,2,3,3,2,1,2,4,3,1,1,1,2,3,3,2,3,1,1,1,4,5};
+    int x_stand[15] = {11,22,34,45,56,66,105,146,178,215,231,299,354,368,392};
+    int y_stand[15] = {8,7,5,4,9,4,5,8,3,6,5,3,5,5,7};
+    int x_move[25] = {5,15,24,46,60,80,88,89,123,155,159,164,174,198,238,245,255,270,281,293,301,334,351,383,384};
+    int y_move[25] = {8,5,5,9,9,5,3,8,9,6,9,4,6,5,4,7,7,7,7,9,3,5,5,7,7};
 
     //QUÁI DI CHUYỂN ĐỘNG
     ThreatsObject* dynamic_threats = new ThreatsObject[25];
@@ -120,8 +119,8 @@ vector<ThreatsObject*> MakeThreadList(){
             p_threat -> LoadImg("assets/img/map/threat_left.png",g_screen);
             p_threat -> set_clips();
             p_threat -> set_type_move(ThreatsObject::MOVE_IN_SPACE_THREAT);
-            p_threat -> set_x_pos (x_dichuyen[i]*TILE_SIZE);
-            p_threat -> set_y_pos(y_dichuyen[i]*TILE_SIZE);
+            p_threat -> set_x_pos (x_move[i]*TILE_SIZE);
+            p_threat -> set_y_pos(y_move[i]*TILE_SIZE);
 
             int pos1 = p_threat -> get_x_pos() - 30;
             int pos2 = p_threat -> get_x_pos() + 30;
@@ -142,8 +141,8 @@ vector<ThreatsObject*> MakeThreadList(){
             p_threat -> LoadImg("assets/img/map/threat_level.png", g_screen);
             p_threat -> set_clips();
             //Đặt vị trí quái threat
-            p_threat -> set_x_pos(x_dungim[i]*TILE_SIZE );
-            p_threat -> set_y_pos(y_dungim[i]*TILE_SIZE);
+            p_threat -> set_x_pos(x_stand[i]*TILE_SIZE );
+            p_threat -> set_y_pos(y_stand[i]*TILE_SIZE);
             p_threat -> set_type_move(ThreatsObject:: STATIC_THREAT);
             //Để nó không di chuyển
             p_threat -> set_input_left(0);

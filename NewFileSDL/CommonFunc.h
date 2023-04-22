@@ -36,9 +36,6 @@ const int RENDER_DRAW_COLOR = 0xff;
 #define STATE_LIFE 26
 #define STATE_GAI1 19
 #define STATE_GAI2 20
-#define STATE_DECOR1 21
-#define STATE_DECOR2 22
-#define STATE_DECOR3 23
 
 //Trạng thái của nhân vật ->MainObject
 struct Input{
@@ -47,8 +44,6 @@ struct Input{
     int up_;
     int down_;
     int jump_;
-    int stand_right_;
-    int stand_left_;
 };
 
 //Vị trí của các 
