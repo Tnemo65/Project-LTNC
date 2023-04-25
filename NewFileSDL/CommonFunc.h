@@ -15,6 +15,9 @@
 
 //Screen
 const int FRAME_PER_SECOND = 40; //FPS 
+const int MFPS = 30;
+const int TIME = 360;
+
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 640;
 const int SCREEN_BPP = 32;
@@ -43,6 +46,7 @@ struct Input{
     int right_;
     int up_;
     int down_;
+    int stand_;
     int jump_;
 };
 

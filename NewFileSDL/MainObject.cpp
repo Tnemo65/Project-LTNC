@@ -5,7 +5,7 @@ MainObject::MainObject()
 
     frame_ = 0;
     //Tọa độ của nhân vật ...
-    x_pos_ = TILE_SIZE;;
+    x_pos_ = TILE_SIZE;
     y_pos_ = 0;
     //Giá trị tăng của x y khi di chuyển
     x_val_ = 0;
@@ -113,9 +113,8 @@ void MainObject:: Show(SDL_Renderer* des){
     UpdateImagePlayer(des);
     //Nếu liên tục bấm -> tăng frame
     if(input_type_.left_ == 1 ||
-       input_type_.right_ == 1)
-    //    input_type_.stand_left_ == 1|| 
-    //    input_type_.stand_right_ == 1)
+       input_type_.right_ == 1||
+       input_type_.stand_ == 1)
     {
         frame_ ++;
     }
@@ -153,8 +152,8 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_RIGHT;
                 input_type_.right_ = 1;
                 input_type_.left_ = 0;
-                // input_type_.stand_right_ = 0;
-                // input_type_.stand_left_ = 0;
+                input_type_.stand_  = 0;
+
                 //Nếu dưới đất thì load ảnh chân di chuyển
                 //Nếu trên không trung thì load ảnh chân đứng im 
                 UpdateImagePlayer(screen);
@@ -166,8 +165,8 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_LEFT;
                 input_type_.left_ = 1;
                 input_type_.right_ = 0;
-                // input_type_.stand_right_ = 0;
-                // input_type_.stand_left_ = 0;
+                input_type_.stand_ = 0;
+
                 UpdateImagePlayer(screen);
             }
             break;
@@ -187,20 +186,18 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
         switch(events.key.keysym.sym){
         case SDLK_RIGHT:
             {
-                //status_ = STAND_RIGHT;
+                //status_ = STAND;
                 input_type_.right_ = 0;
-                // input_type_.stand_right_ = 1;
-                // input_type_.stand_left_ = 0;
+                //input_type_.stand_= 1;
                 //UpdateImagePlayer(screen);
             }
             break;
         
         case SDLK_LEFT:
             {
-                //status_ = STAND_LEFT;
+                //status_ = STAND;
                 input_type_.left_ = 0;
-                // input_type_.stand_right_ = 0;
-                // input_type_.stand_left_ = 1;
+                //input_type_.stand_ = 1;
                 //UpdateImagePlayer(screen);
 
             }
@@ -208,8 +205,10 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
         case SDLK_UP:
         {
             input_type_.jump_ = 0;
-                // input_type_.stand_right_ = 0;
-                // input_type_.stand_left_ = 0;
+
+
+            //NOTE
+            //input_type_.stand_ = 1;
         }
         break;
         }
@@ -431,6 +430,16 @@ void MainObject:: CheckToMap(Map &map_data){
                 Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
 
             }
+            
+
+
+
+            else if (val1 == 27 || val2 == 27){
+                win = true;
+            }
+
+
+
             //Nếu không phải ô tiền và nếu ô không phải rỗng thì bị chặn
             else{
                 //Kiểm tra xem ô bên phải có phải là ô trống hay không
@@ -601,13 +610,10 @@ void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
 
 
 
-        // else if (status_ == STAND_RIGHT){
-        //     LoadImg("assets/img/map/player_stand_right.png", des);
+        // else if (status_ == STAND){
+        //     LoadImg("assets/img/map/player_stand.png", des);
         // }
 
-        // else if (status_ == STAND_LEFT){
-        //     LoadImg("assets/img/map/player_stand_right.png", des);
-        // }
 
 
 

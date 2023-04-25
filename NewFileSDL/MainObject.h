@@ -23,8 +23,7 @@ class MainObject : public BaseObject
             WALK_NONE = 0,
             WALK_RIGHT = 1,
             WALK_LEFT = 2,
-            STAND_RIGHT = 3,
-            STAND_LEFT = 4,
+            STAND = 3,
         };
 
         bool LoadImg (string path, SDL_Renderer* screen);
@@ -51,23 +50,36 @@ class MainObject : public BaseObject
         void HandleBullet(SDL_Renderer* des);
         void RemoveBullet(const int& idx);
         void IncreaseMoney();
+
         int get_frame_width() const {return width_frame_;}
         int get_frame_height() const {return height_frame_;}
         void set_comeback_time(const int& cb_time) {come_back_time_ = cb_time;}
         int get_comeback_time() {return come_back_time_;}
+
+        //LayTien
         int GetMoneyCount() const {return money_count;}
+
+
         int lifeNumber = 0;
         bool IsLifeIncrease(){ return IsIncreaseLife;}
         void SetLifeIncrease(bool status){ IsIncreaseLife = status;}
         bool IsLifeDecrease(){ return IsDecreaseLife;}
         void SetLifeDecrease(bool status){ IsDecreaseLife = status;}
 
-        // bool IsWin(){return win;}
-        // void SetWin(bool status){ win = status;}
+
+        void SetMarkCount (int markcount) {mark = markcount;}
+        int GetMarkCount() const{return mark;}
+        void SetLifeCount(int lifecount) {life = lifecount;}
+        int GetLifeCount() const{return life;}
+        void SetTimeCount(int timecount){time = timecount;}
+        int GetTimeCount() const {return time;}
+
+        
+        bool IsWin(){return win;}
+        void SetWin(bool status){ win = status;}
     private:
         //Vector chứa những viên đạn
         vector<BulletObject*> p_bullet_list_;
-        int money_count;
         //Khi bấm trái phải đi 1 lượng bao nhiêu
         float x_val_;
         float y_val_;
@@ -98,6 +110,11 @@ class MainObject : public BaseObject
         bool IsIncreaseLife;
         bool IsDecreaseLife;
         bool win;
+
+        int money_count;
+        int mark;
+        int life;
+        int time;
 };
 
 #endif
