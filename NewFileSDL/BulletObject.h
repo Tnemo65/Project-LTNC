@@ -37,6 +37,8 @@ class BulletObject: public BaseObject
         //Để xác định biên x y, nếu vượt quá màn hình thì xóa nó đi
         void HandleMove(const int& x_border, const int& y_border);
         bool LoadImgBullet(SDL_Renderer* des);
+
+        void CheckToMap(Map& map_data);
     private:
         int x_val_;
         int y_val_;
@@ -45,6 +47,9 @@ class BulletObject: public BaseObject
         //Xác định vị trí viên đạn được bắn ra theo HƯỚNG CỦA NHÂN VẬT
         unsigned int bullet_dir_; 
         unsigned int bullet_type_;
+
+        int height_frame_;
+        int width_frame_;
 
 };
 

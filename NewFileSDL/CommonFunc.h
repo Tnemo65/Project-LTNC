@@ -14,8 +14,8 @@
 
 
 //Screen
-const int FRAME_PER_SECOND = 40; //FPS 
-const int MFPS = 30;
+const int FRAME_PER_SECOND = 50; //FPS 
+const int MFPS = 50;
 const int TIME = 360;
 
 const int SCREEN_WIDTH = 1280;
@@ -26,6 +26,7 @@ const int SCREEN_BPP = 32;
 const int COLOR_KEY_R = 167;        
 const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
+const int BULLET_VAL = 20;
 
 const int RENDER_DRAW_COLOR = 0xff;
 

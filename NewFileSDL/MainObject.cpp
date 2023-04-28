@@ -152,9 +152,7 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_RIGHT;
                 input_type_.right_ = 1;
                 input_type_.left_ = 0;
-                input_type_.stand_  = 0;
-
-                //Nếu dưới đất thì load ảnh chân di chuyển
+                //input_type_.stand_  = 0;
                 //Nếu trên không trung thì load ảnh chân đứng im 
                 UpdateImagePlayer(screen);
             }
@@ -205,8 +203,6 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
         case SDLK_UP:
         {
             input_type_.jump_ = 0;
-
-
             //NOTE
             //input_type_.stand_ = 1;
         }
@@ -235,8 +231,8 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
 
             }
             //Set tốc độ bắn
-            p_bullet -> set_x_val(20);
-            p_bullet -> set_y_val(20);
+            p_bullet -> set_x_val(BULLET_VAL);
+            p_bullet -> set_y_val(BULLET_VAL);
             //Trong map
             p_bullet -> set_is_move(true);
             //Nạp đạn vào băng
@@ -255,17 +251,20 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                     //Lấy vị trí hình ảnh viên đạn theo nhân vật
                     p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
                     Mix_PlayChannel(-1, bullet_sound[0], 0);
+                    // p_bullet ->CheckToMap(map_data);
 
             }
             else if(status_ == WALK_RIGHT){
                     p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
                     p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.1);            
                     Mix_PlayChannel(-1, bullet_sound[0], 0);
+                    // p_bullet ->CheckToMap(map_data);
+
 
             }
             //Set tốc độ bắn
-            p_bullet -> set_x_val(20);
-            p_bullet -> set_y_val(20);
+            p_bullet -> set_x_val(BULLET_VAL);
+            p_bullet -> set_y_val(BULLET_VAL);
             //Trong map
             p_bullet -> set_is_move(true);
             //Nạp đạn vào băng
@@ -275,11 +274,12 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
     }
 }
 
-void MainObject::HandleBullet(SDL_Renderer* des){
+void MainObject::HandleBullet(SDL_Renderer* des, Map& map_data){
     for(int i = 0; i < (int)p_bullet_list_.size(); i++){
         BulletObject* p_bullet = p_bullet_list_.at(i);
-        //
+
         if(p_bullet != NULL){
+
             //Nếu vẫn trong map
             if(p_bullet -> get_is_move() == true){
                 p_bullet ->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -344,7 +344,7 @@ void MainObject::DoPlayer(Map &map_data){
             }
             //Nếu mà hết thời gian chờ thì nvat rơi từ trên xuống
             //Ở trên cùng map
-            y_pos_ =  TILE_SIZE;
+            y_pos_ = TILE_SIZE;
             x_val_ = 0;
             y_val_ = 0;
         }
@@ -431,11 +431,12 @@ void MainObject:: CheckToMap(Map &map_data){
 
             }
             
-
-
-
             else if (val1 == 27 || val2 == 27){
-                win = true;
+                int mark1 = GetMarkCount();
+                int money =GetMoneyCount();
+                if(mark1 >= 30 && money >= 300){
+                    win = true;
+                }
             }
 
 
@@ -479,6 +480,14 @@ void MainObject:: CheckToMap(Map &map_data){
                 Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
 
             }
+            else if (val1 == 27 || val2 == 27){
+                int mark1 = GetMarkCount();
+                int money =GetMoneyCount();
+                if(mark1 >= 30 && money >= 300){
+                    win = true;
+                }
+            }
+
             else{
                 if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18)){
                     //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
@@ -525,6 +534,14 @@ void MainObject:: CheckToMap(Map &map_data){
 
 
             }
+            else if (val1 == 27 || val2 == 27){
+                int mark1 = GetMarkCount();
+                int money =GetMoneyCount();
+                if(mark1 >= 30 && money >= 300){
+                    win = true;
+                }
+            }
+
             else{
                 if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18)){
                     y_pos_ = y2 * TILE_SIZE;
@@ -562,6 +579,14 @@ void MainObject:: CheckToMap(Map &map_data){
                 Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/thuthapmang.wav"), 0);
 
             }
+            else if (val1 == 27 || val2 == 27){
+                int mark1 = GetMarkCount();
+                int money =GetMoneyCount();
+                if(mark1 >= 30 && money >= 300){
+                    win = true;
+                }
+            }
+
             else{
                 if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18) ){
                      y_pos_ = (y1 + 1)*TILE_SIZE;

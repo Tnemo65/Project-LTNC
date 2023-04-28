@@ -170,6 +170,7 @@ void BatDau()
 
         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
         SDL_RenderClear(g_screen);
+        
         menu.Render(g_screen);
 
         chon[0].SetText("Play");
@@ -197,7 +198,10 @@ void BatDau()
 
                 while (SDL_PollEvent(&g_event))
                 {
-                    bool mcheck = g_event.motion.x >= mx[3] && g_event.motion.x <= mx[3] + mchon[3].GetWidth() && g_event.motion.y >= my[3] && g_event.motion.y <= my[3] + mchon[3].GetHeight();
+                    bool mcheck =  g_event.motion.x >= mx[3] 
+                                && g_event.motion.x <= mx[3] + mchon[3].GetWidth() 
+                                && g_event.motion.y >= my[3] 
+                                && g_event.motion.y <= my[3] + mchon[3].GetHeight();
 
                     switch (g_event.type)
                     {
@@ -345,11 +349,11 @@ void KetThuc(MainObject p_player, const bool& kq)
 
         while (SDL_PollEvent(&g_event))
         {
-            bool check = g_event.motion.x >= x[5]
-            && g_event.motion.x <= x[5] + chon[5].GetWidth()
-            && g_event.motion.y >= y[5]
-            && g_event.motion.y <= y[5] + chon[5].GetHeight();
-
+            bool check =   g_event.motion.x >= x[5]
+                        && g_event.motion.x <= x[5] + chon[5].GetWidth()
+                        && g_event.motion.y >= y[5]
+                        && g_event.motion.y <= y[5] + chon[5].GetHeight();
+        
             switch (g_event.type)
             {
                 case SDL_QUIT:
@@ -374,7 +378,16 @@ void KetThuc(MainObject p_player, const bool& kq)
         SDL_RenderClear(g_screen);
         menu.Render(g_screen);
 
-        if (kq) chon[0].SetText("CONGRATULATIOS!"); else chon[0].SetText(">> GAME OVER <<");
+        if (kq) 
+            {
+                chon[0].SetText("CONGRATULATIOS!");
+            } 
+        else 
+            {
+                chon[0].SetText(">> GAME OVER <<");
+                Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
+
+            }
         chon[1].SetText("Money:");
         chon[2].SetText(std::to_string(p_player.GetMoneyCount()));
         chon[3].SetText("Kill:");
@@ -553,7 +566,9 @@ int main(int argc, char* argv[]){
                 iketthuc = true;
             }
             //Để lấy trạng thái các nút mình bấm trái phải
-            p_player.HandleInputAction(g_event, g_screen, g_sound_bullet);
+            else{
+                p_player.HandleInputAction(g_event, g_screen, g_sound_bullet);
+            }
         }
 
         SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
@@ -564,13 +579,13 @@ int main(int argc, char* argv[]){
         Map map_data = game_map.getMap();
         game_map.DrawMap(g_screen);
 
-        p_player.HandleBullet(g_screen);
+        p_player.HandleBullet(g_screen, map_data);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
         p_player.DoPlayer(map_data);
 
-        if (p_player.GetLifeCount())
+        if (p_player.GetLifeCount() )
         {
-            Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
+            //Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
             iketthuc = true;
             KetThuc(p_player,false);
             Free();
@@ -694,11 +709,12 @@ int main(int argc, char* argv[]){
                         p_player.set_comeback_time(60);
                         SDL_Delay(1000);
                         player_power.LifeDecrease();
+                                    //p_player.SetLifeDecrease(false);
+
                         continue;
                     }
-                    else if(player_power.number_ == 0){
-
-                        Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
+                    else if(player_power.number_ ){
+                        //Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
                         iketthuc = true;
                         KetThuc(p_player,false);
                         p_threat->Free();
@@ -785,9 +801,6 @@ int main(int argc, char* argv[]){
         if ( p_player.IsLifeDecrease()) {
             player_power.LifeDecrease();
             p_player.SetLifeDecrease(false);
-
-
-
             //Vụ nổ khi nhân vật chạm đạn laser or quái
             int frame_exp_width = exp_main.get_frame_width();
             int frame_exp_height = exp_main.get_frame_height();
