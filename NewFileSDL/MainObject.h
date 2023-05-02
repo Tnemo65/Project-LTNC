@@ -9,7 +9,7 @@
 #include "PlayerPower.h"
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
-#define PLAYER_SPEED 8
+#define PLAYER_SPEED 9
 #define PLAYER_JUMP_VAL 15
 using namespace std;
 class MainObject : public BaseObject

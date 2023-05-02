@@ -14,7 +14,7 @@
 
 
 //Screen
-const int FRAME_PER_SECOND = 50; //FPS 
+const int FRAME_PER_SECOND = 75; //FPS 
 const int MFPS = 50;
 const int TIME = 360;
 

@@ -73,6 +73,7 @@ void ThreatsObject::set_clips(){
         frame_clip_[7].y = 0;
         frame_clip_[7].w = width_frame_;
         frame_clip_[7].h = height_frame_;
+        
     }
 }
 
@@ -127,7 +128,7 @@ void ThreatsObject::InitThreats(){
     }
     y_pos_ = TILE_SIZE;
     come_back_time_ = 0;     
-    input_type_.left_ = 1;   
+    input_type_.right_ = 0;   
 }
  void ThreatsObject::CheckToMap(Map& map_data){
     //Định vị trí đầu cuối
@@ -173,6 +174,7 @@ void ThreatsObject::InitThreats(){
                 //x_val_ = 0
                 x_pos_ -= width_frame_ + 1;
                 x_val_ = 0;
+                 input_type_.left_ = 1;
             } 
         }
         //di chuyển sang trái
@@ -184,6 +186,7 @@ void ThreatsObject::InitThreats(){
                 //Lùi chạm đá thì giữ vị trí, x_val_ = 0 luôn
                 x_pos_ = (x1 + 1)*TILE_SIZE;
                 x_val_ = 0;
+                input_type_.right_ = 1;
             }
         }   
     }    
@@ -243,18 +246,18 @@ void ThreatsObject :: ImpMoveType(SDL_Renderer* screen){
     else{
         //Đứng trên mặt đất mới di chuyển
         if(on_ground_ == true){
-            if(x_pos_ > animation_b_){
+            if(x_pos_ > animation_b_ ){
                 input_type_.left_ = 1;
                 input_type_.right_ = 0;
-                LoadImg("assets/img/map/threat_left.png", screen);
+                // LoadImg("assets/img/map/threat_left.png", screen);
             }
-            else if(x_pos_ < animation_a_){
+            else if(x_pos_ < animation_a_ ){
                 input_type_.right_ = 1;
                 input_type_.left_ = 0;
-                LoadImg("assets/img/map/threat_right.png", screen);
+                // LoadImg("assets/img/map/threat_right.png", screen);
             }
+
         }
-        else{
             if(input_type_.left_ == 1){
                 LoadImg("assets/img/map/threat_left.png", screen);
             }
@@ -262,7 +265,7 @@ void ThreatsObject :: ImpMoveType(SDL_Renderer* screen){
             else if(input_type_.right_ == 1){
                 LoadImg("assets/img/map/threat_right.png", screen);
             }
-        }
+        
     }
 }
 

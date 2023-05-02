@@ -47,7 +47,7 @@ bool MainObject::LoadImg(string path, SDL_Renderer* screen){
     if(ret==true){
         //THAY ĐỔI FRAME Ở ĐÂY THAY 8 = 16
         //Làm cho chiều rộng của 1 frame là 60 < TileMap(kích thước 1 ô)
-        width_frame_ = rect_.w /7.995;
+        width_frame_ = rect_.w /8;
         height_frame_ = rect_.h;
     }
     return ret;
@@ -213,20 +213,20 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
         if (events.button.button == SDL_BUTTON_RIGHT){
             BulletObject* p_bullet = new BulletObject();
             //THAY ĐỔI LOẠI ĐẠN
-            p_bullet -> set_bullet_type(BulletObject::LASER_BULLET);
+            p_bullet -> set_bullet_type(BulletObject::LASER_BULLET1);
             p_bullet -> LoadImgBullet(screen);
             //XÁC ĐỊNH ĐẦU RA CỦA ĐẠN
             if(status_ == WALK_LEFT){
                     //Set đang quay sang trái hay phải
                     p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
                     //Lấy vị trí hình ảnh viên đạn theo nhân vật
-                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.3);            
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.48);            
                     Mix_PlayChannel(-1, bullet_sound[1], 0);
 
             }
             else if(status_ == WALK_RIGHT){
                     p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
-                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.3);            
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.48);            
                     Mix_PlayChannel(-1, bullet_sound[1], 0);
 
             }
@@ -249,14 +249,14 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                     //Set đang quay sang trái hay phải
                     p_bullet -> set_bullet_dir(BulletObject::DIR_LEFT);
                     //Lấy vị trí hình ảnh viên đạn theo nhân vật
-                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.1);            
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - TILE_SIZE, rect_.y + height_frame_ * 0.22);            
                     Mix_PlayChannel(-1, bullet_sound[0], 0);
                     // p_bullet ->CheckToMap(map_data);
 
             }
             else if(status_ == WALK_RIGHT){
                     p_bullet -> set_bullet_dir(BulletObject::DIR_RIGHT);
-                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.1);            
+                    p_bullet ->SetRect(this ->rect_.x + width_frame_ - 20, rect_.y + height_frame_ * 0.22);            
                     Mix_PlayChannel(-1, bullet_sound[0], 0);
                     // p_bullet ->CheckToMap(map_data);
 
@@ -438,9 +438,6 @@ void MainObject:: CheckToMap(Map &map_data){
                     win = true;
                 }
             }
-
-
-
             //Nếu không phải ô tiền và nếu ô không phải rỗng thì bị chặn
             else{
                 //Kiểm tra xem ô bên phải có phải là ô trống hay không
@@ -606,7 +603,7 @@ void MainObject:: CheckToMap(Map &map_data){
         x_pos_ = map_data.max_x_ - width_frame_ - 1;
     }
 
-    if(y_pos_ >= map_data.max_y_ - TILE_SIZE/2){
+    if(y_pos_ >= map_data.max_y_ - TILE_SIZE/3){
         IsDecreaseLife = true;
         come_back_time_ = 60;
     }
@@ -629,20 +626,6 @@ void MainObject:: UpdateImagePlayer(SDL_Renderer * des){
         else if(status_ == WALK_RIGHT){
             LoadImg("assets/img/map/player_right.png", des);
         }
-
-
-
-
-
-
-        // else if (status_ == STAND){
-        //     LoadImg("assets/img/map/player_stand.png", des);
-        // }
-
-
-
-
-
 
     }
     //Nếu trên không trung lấy ảnh trên không trung
