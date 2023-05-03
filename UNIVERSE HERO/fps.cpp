@@ -5,12 +5,12 @@ Fps::Fps()
     t = 0;
 }
 
-void Fps::BatDau()
+void Fps::Start()
 {
     t = SDL_GetTicks();
 }
 
-int Fps::LayT()
+int Fps::GetT()
 {
     return SDL_GetTicks() - t;
 }

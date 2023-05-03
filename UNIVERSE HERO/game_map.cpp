@@ -4,7 +4,6 @@
 void GameMap :: LoadMap(char* name)
 {
     FILE* fp = fopen(name, "rb");
-    //fopen_s(&fp, name, "rb");
     if(fp == NULL){
         return;
     }
@@ -65,7 +64,6 @@ void GameMap::DrawMap(SDL_Renderer* screen){
     int map_x = 0;
     int map_y = 0;
     map_x = game_map_.start_x_ / TILE_SIZE;
-    //TILE_SIZE là độ lớn cạnh của ô vuông
     //x1 sẽ là tọa độ(đơn vị pixel) của vị trí bản đồ sau khi đưa về ô vuông gần nhất
     //Ô vuông gần nhất sẽ về bên trái để không fill khuyết phần hổng nếu như x đang ở giữa ô
     x1 =(game_map_.start_x_ %TILE_SIZE) * (-1);

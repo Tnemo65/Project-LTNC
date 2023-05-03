@@ -43,7 +43,7 @@ class BulletObject: public BaseObject
     private:
         int x_val_;
         int y_val_;
-        //Trong màn hình thì chạy không thì thôi
+        //Trong màn hình thì chạy không thì xóa
         bool is_move_;
         //Xác định vị trí viên đạn được bắn ra theo HƯỚNG CỦA NHÂN VẬT
         unsigned int bullet_dir_; 

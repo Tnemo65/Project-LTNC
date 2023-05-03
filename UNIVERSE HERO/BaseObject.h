@@ -17,13 +17,8 @@ class BaseObject
         SDL_Rect GetRect() const { return rect_;}
         //Hàm lấy ra p_object
         SDL_Texture* GetObject() const { return p_object_;}
-        //Hàm load ảnh bitmap lên đối tượng p_object
-        //Rồi dùng p_object gán lên màn hình
-        //VIRTUAL để làm gì -> để có thể tái sử dụng mà không cần đúng phải là đối tượng trong class đó
-        
-        //LayAnh
+        //VIRTUAL để có thể tái sử dụng mà không cần đúng phải là đối tượng trong class đó
         virtual bool LoadImg(string path, SDL_Renderer* screen);
-        //XuatAnh
         void Render(SDL_Renderer* des, const SDL_Rect* clip = NULL);
         void Free();
     protected:

@@ -23,7 +23,6 @@ class MainObject : public BaseObject
             WALK_NONE = 0,
             WALK_RIGHT = 1,
             WALK_LEFT = 2,
-            STAND = 3,
         };
 
         bool LoadImg (string path, SDL_Renderer* screen);

@@ -1,6 +1,4 @@
-//#include "stdafx.h"
 #include"BaseObject.h"
-//Định nghĩa hàm constructor
 using namespace std;
 BaseObject::BaseObject()
 {
@@ -24,7 +22,6 @@ bool BaseObject::LoadImg(string path, SDL_Renderer* screen)
     //Và dùng surface để load lên màn hình
     SDL_Surface* load_surface = IMG_Load(path.c_str());
     if(load_surface != NULL){
-        //Khi màu này được thiết lập thì các pixel cùng màu với nó sẽ không được in ra
         //Xóa nền
         //SDL_MapRBG chuyển đổi giá trị màu từ không gian RBG sang giá trị màu 32bit in ra màn
         SDL_SetColorKey(load_surface, SDL_TRUE, SDL_MapRGB(load_surface->format, COLOR_KEY_R, COLOR_KEY_G, COLOR_KEY_B));

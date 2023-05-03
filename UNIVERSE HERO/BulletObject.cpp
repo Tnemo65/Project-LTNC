@@ -31,7 +31,8 @@ bool BulletObject::LoadImgBullet(SDL_Renderer* des){
 
 void BulletObject::HandleMove(const int& x_border, const int& y_border){
     if(bullet_dir_ == DIR_RIGHT)
-    {//Vị trí của 1 đối tượng hình ảnh hiển thị trên màn hình
+    {
+        //Vị trí của 1 đối tượng hình ảnh hiển thị trên màn hình
         x_val_ = BULLET_VAL;
         rect_.x += x_val_;
         if(rect_.x > x_border){
@@ -59,11 +60,10 @@ void BulletObject:: CheckToMap(Map &map_data){
     int y_pos_ = GetRect().y;
 
                         //KIỂM TRA THEO CHIỀU NGANG
-    //Nếu nhỏ hơn TILE_SIZE thì lấy height_frame còn không thì lấy TILE_SIZE
     int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
-    //Xác định Ô BẮT ĐẦU mà nhân vật đang đứng
+    //Xác định VỊ TRÍ BẮT ĐẦU mà nhân vật đang đứng
     x1 = (x_pos_ + x_val_) /TILE_SIZE;
-    //Xác định Ô KẾT THÚC mà nhân vật đứng
+    //Xác định VỊ TRÍ KẾT THÚC mà nhân vật đứng
     x2 = (x_pos_ + x_val_ + width_frame_ - 1) / TILE_SIZE;  
 
     
@@ -83,7 +83,6 @@ void BulletObject:: CheckToMap(Map &map_data){
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y){
         if(x_val_ > 0) //Di chuyển sang phải
         {   
-            //Nếu ăn phải tiền thì ô tiền biến mất
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
             //Kiểm tra xem ô bên phải có phải là ô trống hay không

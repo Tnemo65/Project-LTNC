@@ -139,7 +139,6 @@ void ThreatsObject::InitThreats(){
     int y2 = 0;
 
                         //KIỂM TRA THEO CHIỀU NGANG
-    //Nếu nhỏ hơn TILE_SIZE thì lấy height_frame còn không thì lấy TILE_SIZE
     int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
     //Xác định Ô BẮT ĐẦU mà nhân vật đang đứng
     x1 = (x_pos_ + x_val_) /TILE_SIZE;
@@ -158,7 +157,6 @@ void ThreatsObject::InitThreats(){
         *               *
         x1,y2********x2,y2
     */
-
     //Kiểm tra xem có đang nằm trong bản đồ không
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y){
         if(x_val_ > 0) //Di chuyển sang phải
@@ -166,7 +164,6 @@ void ThreatsObject::InitThreats(){
             //Nếu ăn phải tiền thì ô tiền biến mất
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
-            // (val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18) 
             //Kiểm tra xem ô bên phải có phải là ô trống hay không
             if( ((val1 >= 1 && val1 <= 18) && val1 != STATE_MONEY) || ((val2 >= 1 && val2 <=18) && val2 != STATE_MONEY)){
                 x_pos_ = x2 * TILE_SIZE; // Ra vị trí biên của frame nhân vật
@@ -249,12 +246,10 @@ void ThreatsObject :: ImpMoveType(SDL_Renderer* screen){
             if(x_pos_ > animation_b_ ){
                 input_type_.left_ = 1;
                 input_type_.right_ = 0;
-                // LoadImg("assets/img/map/threat_left.png", screen);
             }
             else if(x_pos_ < animation_a_ ){
                 input_type_.right_ = 1;
                 input_type_.left_ = 0;
-                // LoadImg("assets/img/map/threat_right.png", screen);
             }
 
         }
@@ -316,7 +311,6 @@ void ThreatsObject :: MakeBullet(SDL_Renderer* screen, const int& x_limit, const
 
 //x_pos_ chỉ số ứng với toàn bộ map 0 -> 25000
 //rect_.x là chỉ số với màn thôi 0 ->1280
-
 void ThreatsObject :: RemoveBullet(const int& idx){
     int size = bullet_list_.size();
     //Có ít nhất 1 viên và viên cần xóa phải là 1 trong số viên đã được bắn ra

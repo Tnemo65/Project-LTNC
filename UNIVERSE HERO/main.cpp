@@ -25,18 +25,19 @@ static Mix_Chunk* g_sound_antien;
 static Mix_Chunk* g_sound_danquai;
 
 BaseObject menu;
-BaseObject hd;
+BaseObject instruction;
 BaseObject setting;
 BaseObject pause;
 BaseObject over;
 Fps fps;
+
 TTF_Font* mfont = NULL;
-bool ibatdau = false;
-bool iketthuc = false;
-bool inhacnen = true;
-bool itamdung = false;
+bool isstart = false;
+bool isend = false;
+bool isbackgroundmusic = true;
+bool ispause = false;
 bool loadingbackgroundsound = false;
-        bool loadgameover = true;
+bool loadgameover = true;
 
 
 
@@ -50,7 +51,7 @@ bool InitData()
     }
     //Thiết lập chất lượng hình ảnh
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");   
-    g_window = SDL_CreateWindow("GAME", 
+    g_window = SDL_CreateWindow("UNIVERSE HERO", 
                                 SDL_WINDOWPOS_UNDEFINED, 
                                 SDL_WINDOWPOS_UNDEFINED, 
                                 SCREEN_WIDTH, 
@@ -83,7 +84,7 @@ bool InitData()
         mfont = TTF_OpenFont ("assets/font/Blazma-Italic.ttf", 60);
         if(!mfont) success = false;
         if (!menu.LoadImg("assets/img/map/menu.png", g_screen)) success = false;
-        if(!hd.LoadImg("assets/img/map/huongdan.png", g_screen)) success = false;
+        if(!instruction.LoadImg("assets/img/map/huongdan.png", g_screen)) success = false;
         if(!setting.LoadImg("assets/img/map/setting.png", g_screen)) success = false;
         if(!pause.LoadImg("assets/img/map/pause.png", g_screen)) success = false;
         if(!over.LoadImg("assets/img/map/gameover.png", g_screen)) success = false;
@@ -91,7 +92,6 @@ bool InitData()
         if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1){
             success = false;;
         }
-
 
         g_sound_bullet[0] = Mix_LoadWAV("assets/sound/game/dantron.wav");
         g_sound_bullet[1] = Mix_LoadWAV("assets/sound/game/danlaser.wav");
@@ -116,54 +116,54 @@ bool LoadBackground()
     return true;
 }          
 
-void BatDau()
+void Start()
 {
-    TextObject chon[4];
+    TextObject select[4];
     int x[4] = {338,642,338,642};
     int y[4] = {242,296,350,404};
-    bool ihuongdan = false;
-    bool icaidat = false;
-    while (!ibatdau)
+    bool isinstruction = false;
+    bool issetting = false;
+    while (!isstart)
     {
-        fps.BatDau();
+        fps.Start();
         while (SDL_PollEvent(&g_event))
         {
             bool check[4];
             for (int i=0; i<4; i++){
                 check[i] = g_event.motion.x >= x[i] 
-                        && g_event.motion.x <= x[i] + chon[i].GetWidth() 
+                        && g_event.motion.x <= x[i] + select[i].GetWidth() 
                         && g_event.motion.y >= y[i] 
-                        && g_event.motion.y <= y[i] + chon[i].GetHeight();
+                        && g_event.motion.y <= y[i] + select[i].GetHeight();
             }
             switch (g_event.type)
             {
                 case SDL_QUIT:
                 {
-                    ibatdau = true;
-                    iketthuc = true;
+                    isstart = true;
+                    isend = true;
                     break;
                 }
                 case SDL_MOUSEMOTION:
                 {
                     for (int i=0; i<4; i++)
                         if (check[i]) {
-                            chon[i].SetColor(TextObject::RED_TEXT);
+                            select[i].SetColor(TextObject::RED_TEXT);
                          }
                         else{
-                            chon[i].SetColor(TextObject::WHITE_TEXT);   
+                            select[i].SetColor(TextObject::WHITE_TEXT);   
                         }
                         
                     break;
                 }
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    if (check[0]) ibatdau = true;
-                    else if (check[1]) ihuongdan = true;
-                    else if (check[2]) icaidat = true;
+                    if (check[0]) isstart = true;
+                    else if (check[1]) isinstruction = true;
+                    else if (check[2]) issetting = true;
                     else if (check[3])
                     {
-                        ibatdau = true;
-                        iketthuc = true;
+                        isstart = true;
+                        isend = true;
                     }
                     break;
                 }
@@ -175,53 +175,53 @@ void BatDau()
         
         menu.Render(g_screen);
 
-        chon[0].SetText("PLAY");
-        chon[1].SetText("INSTRUCTIONS");
-        chon[2].SetText("SETTING");
-        chon[3].SetText("EXIT");
+        select[0].SetText("PLAY");
+        select[1].SetText("INSTRUCTIONS");
+        select[2].SetText("SETTING");
+        select[3].SetText("EXIT");
 
         for (int i=0; i<4; i++)
         {
-            chon[i].LoadFromRenderText(mfont, g_screen);
-            chon[i].RenderText(g_screen,x[i],y[i]);
+            select[i].LoadFromRenderText(mfont, g_screen);
+            select[i].RenderText(g_screen,x[i],y[i]);
         }
 
-        if (ihuongdan)
+        if (isinstruction)
         {
             Fps mfps;
-            TextObject mchon[5];
+            TextObject mselect[5];
             int mx[5] = {338,338,338, 338, 338};
             int my[5] = {235,318,401, 484, 540};
 
-            while (ihuongdan)
+            while (isinstruction)
             {
-                mfps.BatDau();
-                for (int i=0; i<4; i++) mchon[i].SetColor(TextObject::WHITE_TEXT);
+                mfps.Start();
+                for (int i=0; i<4; i++) mselect[i].SetColor(TextObject::WHITE_TEXT);
 
                 while (SDL_PollEvent(&g_event))
                 {
                     bool mcheck =  g_event.motion.x >= mx[4] 
-                                && g_event.motion.x <= mx[4] + mchon[4].GetWidth() 
+                                && g_event.motion.x <= mx[4] + mselect[4].GetWidth() 
                                 && g_event.motion.y >= my[4] 
-                                && g_event.motion.y <= my[4] + mchon[4].GetHeight();
+                                && g_event.motion.y <= my[4] + mselect[4].GetHeight();
 
                     switch (g_event.type)
                     {
                         case SDL_QUIT:
                         {
-                            ibatdau = true;
-                            iketthuc = true;
-                            ihuongdan = false;
+                            isstart = true;
+                            isend = true;
+                            isinstruction = false;
                             break;
                         }
                         case SDL_MOUSEMOTION:
                         {
-                            if (mcheck) mchon[4].SetColor(TextObject::RED_TEXT); else mchon[4].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck) mselect[4].SetColor(TextObject::RED_TEXT); else mselect[4].SetColor(TextObject::WHITE_TEXT);
                             break;
                         }
                         case SDL_MOUSEBUTTONDOWN:
                         {
-                            if (mcheck) ihuongdan = false;
+                            if (mcheck) isinstruction = false;
                             break;
                         }
                     }
@@ -229,75 +229,75 @@ void BatDau()
 
                 SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
                 SDL_RenderClear(g_screen);
-                hd.Render(g_screen);
+                instruction.Render(g_screen);
 
-                mchon[0].SetText("MOVE: LEFT- UP- RIGHT");
-                mchon[1].SetText("     = 1      = 25");
-                mchon[2].SetText("     = 1      = -1");
-                mchon[3].SetText("PRESS 0 TO PAUSE");
-                mchon[4].SetText("BACK");
+                mselect[0].SetText("MOVE: LEFT- UP- RIGHT");
+                mselect[1].SetText("     = 1      = 25");
+                mselect[2].SetText("     = 1      = -1");
+                mselect[3].SetText("PRESS 0 TO PAUSE");
+                mselect[4].SetText("BACK");
 
                 for (int i=0; i<5; i++)
                 {
-                    mchon[i].LoadFromRenderText(mfont, g_screen);
-                    mchon[i].RenderText(g_screen,mx[i],my[i]);
+                    mselect[i].LoadFromRenderText(mfont, g_screen);
+                    mselect[i].RenderText(g_screen,mx[i],my[i]);
                 }
 
                 SDL_RenderPresent(g_screen);
 
-                if (1000/MFPS > mfps.LayT()) SDL_Delay(1000/MFPS - mfps.LayT());
+                if (1000/MFPS > mfps.GetT()) SDL_Delay(1000/MFPS - mfps.GetT());
             }
         }
 
-        if (icaidat)
+        if (issetting)
         {
             Fps mfps;
-            TextObject mchon[4];
+            TextObject mselect[4];
             int mx[4] = {338,550,778,612};
             int my[4] = {242,302,302,400};
 
-            while (icaidat)
+            while (issetting)
             {
-                mfps.BatDau();
-                mchon[0].SetColor(TextObject::WHITE_TEXT);
+                mfps.Start();
+                mselect[0].SetColor(TextObject::WHITE_TEXT);
 
                 while (SDL_PollEvent(&g_event))
                 {
                     bool mcheck[4];
-                    for (int i=1; i<4; i++) mcheck[i] = g_event.motion.x >= mx[i] && g_event.motion.x <= mx[i] + mchon[i].GetWidth() && g_event.motion.y >= my[i] && g_event.motion.y <= my[i] + mchon[i].GetHeight();
+                    for (int i=1; i<4; i++) mcheck[i] = g_event.motion.x >= mx[i] && g_event.motion.x <= mx[i] + mselect[i].GetWidth() && g_event.motion.y >= my[i] && g_event.motion.y <= my[i] + mselect[i].GetHeight();
 
                     switch (g_event.type)
                     {
                         case SDL_QUIT:
                         {
-                            ibatdau = true;
-                            iketthuc = true;
-                            icaidat = false;
+                            isstart = true;
+                            isend = true;
+                            issetting = false;
                             break;
                         }
                         case SDL_MOUSEMOTION:
                         {
-                            if (mcheck[1]) mchon[1].SetColor(TextObject::GREEN_TEXT); else mchon[1].SetColor(TextObject::WHITE_TEXT);
-                            if (mcheck[2]) mchon[2].SetColor(TextObject::GREEN_TEXT); else mchon[2].SetColor(TextObject::WHITE_TEXT);
-                            if (mcheck[3]) mchon[3].SetColor(TextObject::RED_TEXT); else mchon[3].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck[1]) mselect[1].SetColor(TextObject::GREEN_TEXT); else mselect[1].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck[2]) mselect[2].SetColor(TextObject::GREEN_TEXT); else mselect[2].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck[3]) mselect[3].SetColor(TextObject::RED_TEXT); else mselect[3].SetColor(TextObject::WHITE_TEXT);
                             break;
                         }
                         case SDL_MOUSEBUTTONDOWN:
                         {
                             if (mcheck[1])
                             {
-                                inhacnen = false;
-                                icaidat = false;
+                                isbackgroundmusic = false;
+                                issetting = false;
                             }
                             else if (mcheck[2])
                             {
-                                if(inhacnen == true){
+                                if(isbackgroundmusic == true){
                                     loadingbackgroundsound = false;
                                 }
-                                inhacnen = true;
-                                icaidat = false;
+                                isbackgroundmusic = true;
+                                issetting = false;
                             }
-                            else if (mcheck[3]) icaidat = false;
+                            else if (mcheck[3]) issetting = false;
                             break;
                         }
                     }
@@ -307,74 +307,74 @@ void BatDau()
                 SDL_RenderClear(g_screen);
                 setting.Render(g_screen);
 
-                mchon[0].SetText("BACKGROUND SOUND?");
-                mchon[1].SetText("<OFF>");
-                mchon[2].SetText("<ON>");
-                mchon[3].SetText("BACK");
+                mselect[0].SetText("BACKGROUND SOUND?");
+                mselect[1].SetText("<OFF>");
+                mselect[2].SetText("<ON>");
+                mselect[3].SetText("BACK");
 
                 for (int i=0; i<4; i++)
                 {
-                    mchon[i].LoadFromRenderText(mfont, g_screen);
-                    mchon[i].RenderText(g_screen,mx[i],my[i]);
+                    mselect[i].LoadFromRenderText(mfont, g_screen);
+                    mselect[i].RenderText(g_screen,mx[i],my[i]);
                 }
 
                 SDL_RenderPresent(g_screen);
 
-                if (1000/MFPS > mfps.LayT()) SDL_Delay(1000/MFPS - mfps.LayT());
+                if (1000/MFPS > mfps.GetT()) SDL_Delay(1000/MFPS - mfps.GetT());
             }
         }
 
         SDL_RenderPresent(g_screen);
 
-        if (1000/MFPS > fps.LayT()) SDL_Delay(1000/MFPS - fps.LayT());
+        if (1000/MFPS > fps.GetT()) SDL_Delay(1000/MFPS - fps.GetT());
     }
 }
 
 
-void KetThuc(MainObject p_player, const bool& kq)
+void End(MainObject p_player, const bool& kq)
 {
-    TextObject chon[6];
+    TextObject select[6];
     int x[6] = {350,450,675,450,675,700};
     int y[6] = {242,326,326,388,388,530};
     int nhay = 0;
 
-    while (iketthuc)
+    while (isend)
     {
-        fps.BatDau();
+        fps.Start();
         nhay = (nhay+1)%4;
-        for (int i=0; i<5; i++) chon[i].SetColor(TextObject::WHITE_TEXT);
+        for (int i=0; i<5; i++) select[i].SetColor(TextObject::WHITE_TEXT);
         if (nhay<2)
         {
             if (kq) {
-                chon[0].SetColor(TextObject::GREEN_TEXT);
+                select[0].SetColor(TextObject::GREEN_TEXT);
             }
             else {
-                chon[0].SetColor(TextObject::RED_TEXT);
+                select[0].SetColor(TextObject::RED_TEXT);
             }
         }        
 
         while (SDL_PollEvent(&g_event))
         {
             bool check =   g_event.motion.x >= x[5]
-                        && g_event.motion.x <= x[5] + chon[5].GetWidth()
+                        && g_event.motion.x <= x[5] + select[5].GetWidth()
                         && g_event.motion.y >= y[5]
-                        && g_event.motion.y <= y[5] + chon[5].GetHeight();
+                        && g_event.motion.y <= y[5] + select[5].GetHeight();
         
             switch (g_event.type)
             {
                 case SDL_QUIT:
                 {
-                    iketthuc = false;
+                    isend = false;
                     break;
                 }
                 case SDL_MOUSEMOTION:
                 {
-                    if (check) chon[5].SetColor(TextObject::RED_TEXT); else chon[5].SetColor(TextObject::WHITE_TEXT);
+                    if (check) select[5].SetColor(TextObject::RED_TEXT); else select[5].SetColor(TextObject::WHITE_TEXT);
                     break;
                 }
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    if (check) iketthuc = false;
+                    if (check) isend = false;
                     break;
                 }
             }
@@ -385,12 +385,12 @@ void KetThuc(MainObject p_player, const bool& kq)
         if (kq) 
             {
                 over.Render(g_screen);
-                chon[0].SetText("CONGRATULATIONS!");
+                select[0].SetText("CONGRATULATIONS!");
             } 
         else 
             {
                 over.Render(g_screen);
-                chon[0].SetText(">> GAME OVER <<");
+                select[0].SetText(">> GAME OVER <<");
                 if(loadgameover == true){
                     Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
                     loadgameover = false;
@@ -398,76 +398,76 @@ void KetThuc(MainObject p_player, const bool& kq)
 
 
             }
-        chon[1].SetText("MONEY:");
-        chon[2].SetText(std::to_string(p_player.GetMoneyCount()));
-        chon[3].SetText("KILL:");
-        chon[4].SetText(std::to_string(p_player.GetMarkCount()));
-        chon[5].SetText("EXIT");
+        select[1].SetText("MONEY:");
+        select[2].SetText(std::to_string(p_player.GetMoneyCount()));
+        select[3].SetText("KILL:");
+        select[4].SetText(std::to_string(p_player.GetMarkCount()));
+        select[5].SetText("EXIT");
 
         for (int i=0; i<6; i++)
         {
-            chon[i].LoadFromRenderText(mfont, g_screen);
-            chon[i].RenderText(g_screen,x[i],y[i]);
+            select[i].LoadFromRenderText(mfont, g_screen);
+            select[i].RenderText(g_screen,x[i],y[i]);
         }
 
         SDL_RenderPresent(g_screen);
 
-        if (1000/MFPS > fps.LayT()) SDL_Delay(1000/MFPS - fps.LayT());
+        if (1000/MFPS > fps.GetT()) SDL_Delay(1000/MFPS - fps.GetT());
     }
 }
 
-void TamDung()
+void Pause()
 {
-    TextObject chon[4];
+    TextObject select[4];
     int x[4] = {338,642,338,642};
     int y[4] = {242,296,350,404};
-    bool ihuongdan = false;
-    bool icaidat = false;
-    bool itamdung = true;
+    bool isinstruction = false;
+    bool issetting = false;
+    bool ispause = true;
 
-    while (itamdung == true)
+    while (ispause == true)
     {
-        fps.BatDau();
+        fps.Start();
 
         while (SDL_PollEvent(&g_event))
         {
             bool check[4];
             for (int i=0; i<4; i++){
                 check[i] = g_event.motion.x >= x[i] 
-                        && g_event.motion.x <= x[i] + chon[i].GetWidth() 
+                        && g_event.motion.x <= x[i] + select[i].GetWidth() 
                         && g_event.motion.y >= y[i] 
-                        && g_event.motion.y <= y[i] + chon[i].GetHeight();
+                        && g_event.motion.y <= y[i] + select[i].GetHeight();
             }
             switch (g_event.type)
             {
                 case SDL_QUIT:
                 {
-                    ibatdau = true;
-                    iketthuc = true;
-                    itamdung = false;
+                    isstart = true;
+                    isend = true;
+                    ispause = false;
                     break;
                 }
                 case SDL_MOUSEMOTION:
                 {
                     for (int i=0; i<4; i++)
                         if (check[i]) {
-                            chon[i].SetColor(TextObject::RED_TEXT);
+                            select[i].SetColor(TextObject::RED_TEXT);
                          }
                         else{
-                            chon[i].SetColor(TextObject::WHITE_TEXT);   
+                            select[i].SetColor(TextObject::WHITE_TEXT);   
                         }
                         
                     break;
                 }
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    if (check[0]) itamdung = false;
-                    else if (check[1]) ihuongdan = true;
-                    else if (check[2]) icaidat = true;
+                    if (check[0]) ispause = false;
+                    else if (check[1]) isinstruction = true;
+                    else if (check[2]) issetting = true;
                     else if (check[3])
                     {
-                        iketthuc = true;
-                        itamdung=false;
+                        isend = true;
+                        ispause=false;
                     }
                     break;
                 }
@@ -479,53 +479,53 @@ void TamDung()
         
         pause.Render(g_screen);
 
-        chon[0].SetText("CONTINUE");
-        chon[1].SetText("INSTRUCTIONS");
-        chon[2].SetText("SETTING");
-        chon[3].SetText("EXIT");
+        select[0].SetText("CONTINUE");
+        select[1].SetText("INSTRUCTIONS");
+        select[2].SetText("SETTING");
+        select[3].SetText("EXIT");
 
         for (int i=0; i<4; i++)
         {
-            chon[i].LoadFromRenderText(mfont, g_screen);
-            chon[i].RenderText(g_screen,x[i],y[i]);
+            select[i].LoadFromRenderText(mfont, g_screen);
+            select[i].RenderText(g_screen,x[i],y[i]);
         }
 
-        if (ihuongdan)
+        if (isinstruction)
         {
             Fps mfps;
-            TextObject mchon[5];
+            TextObject mselect[5];
             int mx[5] = {338,338,338, 338, 338};
             int my[5] = {235,318,401, 484, 540};
 
-            while (ihuongdan)
+            while (isinstruction)
             {
-                mfps.BatDau();
-                for (int i=0; i<4; i++) mchon[i].SetColor(TextObject::WHITE_TEXT);
+                mfps.Start();
+                for (int i=0; i<4; i++) mselect[i].SetColor(TextObject::WHITE_TEXT);
 
                 while (SDL_PollEvent(&g_event))
                 {
                     bool mcheck =  g_event.motion.x >= mx[4] 
-                                && g_event.motion.x <= mx[4] + mchon[4].GetWidth() 
+                                && g_event.motion.x <= mx[4] + mselect[4].GetWidth() 
                                 && g_event.motion.y >= my[4] 
-                                && g_event.motion.y <= my[4] + mchon[4].GetHeight();
+                                && g_event.motion.y <= my[4] + mselect[4].GetHeight();
 
                     switch (g_event.type)
                     {
                         case SDL_QUIT:
                         {
-                            ibatdau = true;
-                            iketthuc = true;
-                            ihuongdan = false;
+                            isstart = true;
+                            isend = true;
+                            isinstruction = false;
                             break;
                         }
                         case SDL_MOUSEMOTION:
                         {
-                            if (mcheck) mchon[4].SetColor(TextObject::RED_TEXT); else mchon[4].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck) mselect[4].SetColor(TextObject::RED_TEXT); else mselect[4].SetColor(TextObject::WHITE_TEXT);
                             break;
                         }
                         case SDL_MOUSEBUTTONDOWN:
                         {
-                            if (mcheck) ihuongdan = false;
+                            if (mcheck) isinstruction = false;
                             break;
                         }
                     }
@@ -533,81 +533,81 @@ void TamDung()
 
                 SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
                 SDL_RenderClear(g_screen);
-                hd.Render(g_screen);
+                instruction.Render(g_screen);
 
-                mchon[0].SetText("MOVE: LEFT- UP- RIGHT");
-                mchon[1].SetText("     = 1      = 25");
-                mchon[2].SetText("     = 1      = -1");
-                mchon[3].SetText("PRESS 0 TO PAUSE");
-                mchon[4].SetText("BACK");
+                mselect[0].SetText("MOVE: LEFT- UP- RIGHT");
+                mselect[1].SetText("     = 1      = 25");
+                mselect[2].SetText("     = 1      = -1");
+                mselect[3].SetText("PRESS 0 TO PAUSE");
+                mselect[4].SetText("BACK");
 
                 for (int i=0; i<5; i++)
                 {
-                    mchon[i].LoadFromRenderText(mfont, g_screen);
-                    mchon[i].RenderText(g_screen,mx[i],my[i]);
+                    mselect[i].LoadFromRenderText(mfont, g_screen);
+                    mselect[i].RenderText(g_screen,mx[i],my[i]);
                 }
 
                 SDL_RenderPresent(g_screen);
 
-                if (1000/MFPS > mfps.LayT()) SDL_Delay(1000/MFPS - mfps.LayT());
+                if (1000/MFPS > mfps.GetT()) SDL_Delay(1000/MFPS - mfps.GetT());
             }
         }
-        if (icaidat)
+        if (issetting)
         {
             Fps mfps;
-            TextObject mchon[4];
+            TextObject mselect[4];
             int mx[4] = {338,550,778,612};
             int my[4] = {242,302,302,400};
 
-            while (icaidat)
+            while (issetting)
             {
-                mfps.BatDau();
-                mchon[0].SetColor(TextObject::WHITE_TEXT);
+                mfps.Start();
+                mselect[0].SetColor(TextObject::WHITE_TEXT);
 
                 while (SDL_PollEvent(&g_event))
                 {
                     bool mcheck[4];
                     for (int i=1; i<4; i++) {
                         mcheck[i] = g_event.motion.x >= mx[i] 
-                                && g_event.motion.x <= mx[i] + mchon[i].GetWidth() 
+                                && g_event.motion.x <= mx[i] + mselect[i].GetWidth() 
                                 && g_event.motion.y >= my[i] 
-                                && g_event.motion.y <= my[i] + mchon[i].GetHeight();
+                                && g_event.motion.y <= my[i] + mselect[i].GetHeight();
                     }
                     switch (g_event.type)
                     {
                         case SDL_QUIT:
                         {
-                            ibatdau = true;
-                            iketthuc = true;
-                            icaidat = false;
+                            isstart = true;
+                            isend = true;
+                            issetting = false;
                             break;
                         }
                         case SDL_MOUSEMOTION:
                         {
-                            if (mcheck[1]) mchon[1].SetColor(TextObject::GREEN_TEXT); else mchon[1].SetColor(TextObject::WHITE_TEXT);
-                            if (mcheck[2]) mchon[2].SetColor(TextObject::GREEN_TEXT); else mchon[2].SetColor(TextObject::WHITE_TEXT);
-                            if (mcheck[3]) mchon[3].SetColor(TextObject::RED_TEXT); else mchon[3].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck[1]) mselect[1].SetColor(TextObject::GREEN_TEXT); else mselect[1].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck[2]) mselect[2].SetColor(TextObject::GREEN_TEXT); else mselect[2].SetColor(TextObject::WHITE_TEXT);
+                            if (mcheck[3]) mselect[3].SetColor(TextObject::RED_TEXT); else mselect[3].SetColor(TextObject::WHITE_TEXT);
                             break;
                         }
                         case SDL_MOUSEBUTTONDOWN:
                         {
                             if (mcheck[1])
                             {
-                                inhacnen = false;
-                                icaidat = false;
+                                isbackgroundmusic = false;
+                                issetting = false;
                             }
                             else if (mcheck[2])
                             {
-                                if(inhacnen == true){
+                                if(isbackgroundmusic == true){
                                     loadingbackgroundsound = true;
                                 }
-                                else if(inhacnen == false){
+                                else if(isbackgroundmusic == false){
                                     loadingbackgroundsound = false;
                                 }
-                                inhacnen = true;
-                                icaidat = false;
+                                isbackgroundmusic = true;
+                                issetting = false;
                             }
-                            else if (mcheck[3]) icaidat = false;
+                            else if (mcheck[3]) issetting = false;
                             break;
                         }
                     }
@@ -617,26 +617,26 @@ void TamDung()
                 SDL_RenderClear(g_screen);
                 setting.Render(g_screen);
 
-                mchon[0].SetText("BACKGROUND SOUND?");
-                mchon[1].SetText("<OFF>");
-                mchon[2].SetText("<ON>");
-                mchon[3].SetText("BACK");
+                mselect[0].SetText("BACKGROUND SOUND?");
+                mselect[1].SetText("<OFF>");
+                mselect[2].SetText("<ON>");
+                mselect[3].SetText("BACK");
 
                 for (int i=0; i<4; i++)
                 {
-                    mchon[i].LoadFromRenderText(mfont, g_screen);
-                    mchon[i].RenderText(g_screen,mx[i],my[i]);
+                    mselect[i].LoadFromRenderText(mfont, g_screen);
+                    mselect[i].RenderText(g_screen,mx[i],my[i]);
                 }
 
                 SDL_RenderPresent(g_screen);
 
-                if (1000/MFPS > mfps.LayT()) SDL_Delay(1000/MFPS - mfps.LayT());
+                if (1000/MFPS > mfps.GetT()) SDL_Delay(1000/MFPS - mfps.GetT());
             }
         }
 
         SDL_RenderPresent(g_screen);
 
-        if (1000/MFPS > fps.LayT()) SDL_Delay(1000/MFPS - fps.LayT());
+        if (1000/MFPS > fps.GetT()) SDL_Delay(1000/MFPS - fps.GetT());
     }
 }
 
@@ -644,7 +644,7 @@ void TamDung()
 
 void Free()
 {
-    hd.Free();
+    instruction.Free();
     menu.Free();
 
     SDL_DestroyRenderer(g_screen);
@@ -722,7 +722,7 @@ int main(int argc, char* argv[]){
     if(LoadBackground() == false){
         return -1;
     }
-    BatDau();
+    Start();
 
     GameMap game_map;
     //fill ảnh đất
@@ -776,31 +776,27 @@ int main(int argc, char* argv[]){
     money_game.SetColor(TextObject::WHITE_TEXT);
 
 
-    if(inhacnen == true){
+    if(isbackgroundmusic == true){
         Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/nhacnen.wav"), 0);
         loadingbackgroundsound = true;
     }
 
-    while(ibatdau && !iketthuc){
-        // fps_timer.start();
-            fps.BatDau();
+    while(isstart && !isend){
+            fps.Start();
         while(SDL_PollEvent( &g_event) != 0){
             if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_0)
             {
-                itamdung = true;
-                TamDung();
-                if(inhacnen == true && loadingbackgroundsound == false){
+                ispause = true;
+                Pause();
+                if(isbackgroundmusic == true && loadingbackgroundsound == false){
                     Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/nhacnen.wav"), 0);
                 }
-                else if(inhacnen == false){
+                else if(isbackgroundmusic == false){
                     Mix_HaltChannel(-1);
                 }
-                //Cần 1 hàm void xử lí tạm dừng
-                //Nếu bấm vào chữ "Continue" thì itieptuc = true và gọi hàm tiếp tục
-                //Cần 1 hàm void xử lí tiếp tục
             }
             if( g_event.type == SDL_QUIT|| g_event.key.keysym.sym == SDLK_ESCAPE){
-                iketthuc = true;
+                isend = true;
             }
             //Để lấy trạng thái các nút mình bấm trái phải
             else{
@@ -822,7 +818,6 @@ int main(int argc, char* argv[]){
         p_player.DoPlayer(map_data);
 
         p_player.Show(g_screen); 
-
 
         game_map.SetMap(map_data);
 
@@ -846,8 +841,8 @@ int main(int argc, char* argv[]){
         Uint32 val_time = TIME - time_val;
         if(TIME < time_val){
             Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/timeout.wav"), 0);
-            iketthuc = true;
-            KetThuc(p_player,false);
+            isend = true;
+            End(p_player,false);
             Free();
             return 0;
         }
@@ -934,23 +929,18 @@ int main(int argc, char* argv[]){
                     }
                     player_power.LifeDecrease();
 
-                    if(player_power.number_ == 2){
-                        //player_power.LifeDecrease();
-                    }
 
                     if(player_power.number_ > 0 ){
                         p_player.SetRect(0, 0);
                         p_player.set_comeback_time(60);
                         SDL_Delay(1000);
-                        //player_power.LifeDecrease();
-                        //p_player.SetLifeDecrease(false);
                         continue;
                     }
                     
                     if(player_power.number_ <= 0  ){
                         Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
-                        iketthuc = true;
-                        KetThuc(p_player,false);
+                        isend = true;
+                        End(p_player,false);
                         p_threat->Free();
                         Free();
                         return 0;
@@ -1012,12 +1002,10 @@ int main(int argc, char* argv[]){
                 }   
             }
         }
-
-
             if(p_player.IsWin()){
                 Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/congratulations.wav"), 0);
-                iketthuc = true;
-                KetThuc(p_player,true);
+                isend = true;
+                End(p_player,true);
                 Free();
                 return 0;
             }
@@ -1051,8 +1039,8 @@ int main(int argc, char* argv[]){
 
                 if(player_power.number_ == 0 ){
                     Mix_PlayChannel(-1, Mix_LoadWAV("assets/sound/game/gameover.wav"), 0);
-                    iketthuc = true;
-                    KetThuc(p_player,false);
+                    isend = true;
+                    End(p_player,false);
                     Free();
                     return 0;
                 }

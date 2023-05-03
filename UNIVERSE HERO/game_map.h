@@ -11,8 +11,6 @@ class TileMat : public BaseObject
     TileMat() {;}
     ~TileMat() {;}
 };
-//Lớp quản lí xây map
-//Fill map
 class GameMap
 {
     public:

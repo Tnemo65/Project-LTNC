@@ -9,8 +9,8 @@ public:
     Fps();
     ~Fps(){}
 
-    void BatDau();
-    int LayT();
+    void Start();
+    int GetT();
 
 private:
     int t;

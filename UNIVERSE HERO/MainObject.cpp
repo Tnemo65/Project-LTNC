@@ -152,8 +152,6 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_RIGHT;
                 input_type_.right_ = 1;
                 input_type_.left_ = 0;
-                //input_type_.stand_  = 0;
-                //Nếu trên không trung thì load ảnh chân đứng im 
                 UpdateImagePlayer(screen);
             }
             break;
@@ -163,8 +161,6 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
                 status_ = WALK_LEFT;
                 input_type_.left_ = 1;
                 input_type_.right_ = 0;
-                input_type_.stand_ = 0;
-
                 UpdateImagePlayer(screen);
             }
             break;
@@ -184,27 +180,18 @@ void MainObject:: HandleInputAction(SDL_Event events, SDL_Renderer* screen, Mix_
         switch(events.key.keysym.sym){
         case SDLK_RIGHT:
             {
-                //status_ = STAND;
                 input_type_.right_ = 0;
-                //input_type_.stand_= 1;
-                //UpdateImagePlayer(screen);
             }
             break;
         
         case SDLK_LEFT:
             {
-                //status_ = STAND;
                 input_type_.left_ = 0;
-                //input_type_.stand_ = 1;
-                //UpdateImagePlayer(screen);
-
             }
             break;
         case SDLK_UP:
         {
             input_type_.jump_ = 0;
-            //NOTE
-            //input_type_.stand_ = 1;
         }
         break;
         }
@@ -381,14 +368,12 @@ void MainObject:: CheckToMap(Map &map_data){
     int y2 = 0;
 
                         //KIỂM TRA THEO CHIỀU NGANG
-    //Nếu nhỏ hơn TILE_SIZE thì lấy height_frame còn không thì lấy TILE_SIZE
     int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
     //Xác định Ô BẮT ĐẦU mà nhân vật đang đứng
     x1 = (x_pos_ + x_val_) /TILE_SIZE;
     //Xác định Ô KẾT THÚC mà nhân vật đứng
     x2 = (x_pos_ + x_val_ + width_frame_ - 1) / TILE_SIZE;  
 
-    
     //Xác định ô đầu cuối mà nhân vật đang đứng 
     y1 = (y_pos_) /TILE_SIZE;
     y2 = (y_pos_ + height_min - 1)/TILE_SIZE;
@@ -444,7 +429,6 @@ void MainObject:: CheckToMap(Map &map_data){
                 if((val1 >= 1 && val1 <= 18) || (val2 >= 1 && val2 <=18)){
                     x_pos_ = x2 * TILE_SIZE; // Ra vị trí biên của frame nhân vật
                     //Nếu mà chạm tường thì x_pos_ chỉ dừng ở đó
-                    //x_val_ = 0
                     x_pos_ -= width_frame_ + 1;
                     x_val_ = 0;
                 }
